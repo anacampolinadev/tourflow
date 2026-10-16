@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { listOperators, operatorStatuses, statusLabels } from "@/modules/tenants";
+import { requireAdminPage } from "../guard";
 
 export default async function Operators({ searchParams }: { searchParams: Promise<{ q?: string; status?: string; page?: string }> }) {
+  await requireAdminPage();
   const query = await searchParams;
   const status = operatorStatuses.find((item) => item === query.status);
   const { organizations, total, page } = await listOperators({ search: query.q, status, page: Number(query.page ?? 1) });

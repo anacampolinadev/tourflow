@@ -4,8 +4,10 @@ import { OperatorForm } from "@/components/operator-form";
 import { StatusForm } from "@/components/status-form";
 import { getOperator, allowedNextStatuses, statusLabels } from "@/modules/tenants";
 import { saveOperator, saveStatus } from "../actions";
+import { requireAdminPage } from "../../guard";
 
 export default async function OperatorDetail({ params, searchParams }: { params: Promise<{ organizationId: string }>; searchParams: Promise<{ saved?: string }> }) {
+  await requireAdminPage();
   const { organizationId } = await params;
   const organization = await getOperator(organizationId);
   if (!organization?.operator) notFound();
