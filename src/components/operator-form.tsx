@@ -2,12 +2,15 @@
 
 import { useActionState } from "react";
 import type { FormState } from "@/app/admin/operators/actions";
+import { useHydrated } from "./use-hydrated";
 
 type Values = { name: string; responsibleName: string; contactEmail: string; contactPhone: string; plan: string; setupPaid: boolean; monthlyPriceCents: number; primaryLanguage: string };
 export function OperatorForm({ action, values }: { action: (state: FormState, form: FormData) => Promise<FormState>; values?: Values }) {
   const [state, submit, pending] = useActionState(action, { error: null });
+  const hydrated = useHydrated();
   return <form action={submit}>
     {state.error ? <p role="alert">{state.error}</p> : null}
+    <fieldset disabled={!hydrated || pending}>
     <label htmlFor="name">Nome do operador</label><input id="name" name="name" required maxLength={120} defaultValue={values?.name} />
     {!values ? <><label htmlFor="slug">Endereço do operador</label><input id="slug" name="slug" required minLength={3} maxLength={80} pattern="[a-z0-9]+(-[a-z0-9]+)*" placeholder="sintra-mountain" /><p>Use letras minúsculas, números e hífen. Este identificador é permanente.</p></> : null}
     <label htmlFor="responsibleName">Responsável</label><input id="responsibleName" name="responsibleName" required maxLength={120} defaultValue={values?.responsibleName} />
@@ -19,5 +22,6 @@ export function OperatorForm({ action, values }: { action: (state: FormState, fo
     <label className="checkbox"><input name="setupPaid" type="checkbox" defaultChecked={values?.setupPaid} /> Setup pago</label>
     <label htmlFor="primaryLanguage">Idioma principal</label><select id="primaryLanguage" name="primaryLanguage" defaultValue={values?.primaryLanguage ?? "pt"}><option value="pt">Português</option><option value="en">Inglês</option><option value="es">Espanhol</option><option value="de">Alemão</option></select>
     <button type="submit" disabled={pending}>{pending ? "A guardar…" : "Guardar operador"}</button>
+    </fieldset>
   </form>;
 }
