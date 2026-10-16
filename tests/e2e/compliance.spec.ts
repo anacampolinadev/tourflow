@@ -85,7 +85,7 @@ test("private uploads, correction, version history and explicit human approval",
   await admin.getByRole("button", { name: "Guardar revisão" }).click();
   await expect(admin.locator("main strong")).toHaveText("Documentos pendentes");
   await owner.reload();
-  await expect(owner.getByRole("alert")).toContainText("cópia legível");
+  await expect(owner.getByRole("main").getByRole("alert")).toContainText("cópia legível");
   await expect(owner.getByRole("button", { name: "Enviar documentação para análise" })).toBeDisabled();
   await upload(owner, "substituto.pdf");
   await owner.getByText("Histórico de versões (2)", { exact: true }).click();
@@ -111,7 +111,7 @@ test("private uploads, correction, version history and explicit human approval",
   await expect(admin.getByRole("button", { name: "Aprovar documentação do operador" })).toBeEnabled();
   await admin.getByRole("button", { name: "Aprovar documentação do operador" }).click();
   await expect(admin.locator("main strong")).toHaveText("Aprovado");
-  await expect(admin.getByRole("status")).toContainText("Documentação aprovada e válida");
+  await expect(admin.getByRole("main").getByRole("status")).toContainText("Documentação aprovada e válida");
   const profile = await db.operatorProfile.findUniqueOrThrow({ where: { organizationId } });
   expect(profile.approvedAt).not.toBeNull();
   expect(profile.approvedById).not.toBeNull();
@@ -119,4 +119,5 @@ test("private uploads, correction, version history and explicit human approval",
   await admin.screenshot({ path: "test-results/compliance-approved.png", fullPage: true });
   await ownerContext.close();
 });
+
 
