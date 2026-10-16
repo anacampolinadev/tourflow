@@ -67,6 +67,9 @@ export async function updateOperator(organizationId: string, expectedVersion: nu
   const { name, ...profile } = operatorInput.parse(raw);
   if (!Number.isSafeInteger(expectedVersion) || expectedVersion < 0) throw new OperatorConflict();
   await getDb().$transaction(async (tx) => {
+    const current = await tx.operatorProfile.findUnique({ where: { organizationId }, include: { organization: { select: { name: true } } } });
+    if (!current || current.version !== expectedVersion) throw new OperatorConflict();
+    if (!["LEAD", "CONTRACTED", "ONBOARDING", "DOCS_PENDING", "SUSPENDED"].includes(current.status) && (name !== current.organization.name || profile.responsibleName !== current.responsibleName || profile.contactEmail !== current.contactEmail)) throw new OperatorConflict();
     const changed = await tx.operatorProfile.updateMany({ where: { organizationId, version: expectedVersion }, data: { ...profile, version: { increment: 1 } } });
     if (changed.count !== 1) throw new OperatorConflict();
     await tx.organization.update({ where: { id: organizationId }, data: { name } });

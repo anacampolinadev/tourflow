@@ -13,5 +13,5 @@ export default async function Operator({ params }: { params: Promise<{ organizat
     throw error;
   });
   if (!organization) notFound();
-  return <main><Link href="/workspace">Organizações</Link><h1>{organization.name}</h1><p>O espaço operacional será disponibilizado nas próximas etapas.</p></main>;
+  return <main><Link href="/workspace">Organizações</Link><h1>{organization.name}</h1><p><Link href={`/operator/${organizationId}/documents`}>Documentação do operador</Link> (acesso do responsável)</p><p>O espaço operacional será disponibilizado nas próximas etapas.</p></main>;
 }

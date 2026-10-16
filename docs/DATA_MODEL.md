@@ -39,3 +39,7 @@ As transições e precondições serão definidas como funções de domínio no 
 
 ## Fora desta fase
 Subscription, UsageRecord, Invoice e entidades de Network/marketplace (Affiliate, Referral, Transaction, Payout, Commission).
+
+## Modelo físico 03
+ComplianceRequirement pertence à organização; título, exigência de validade, ativo. Desativação preserva histórico. ComplianceDocument referencia (requirementId, organizationId), tem revisão única por requisito, metadados, SHA-256 e bytes privados; limites de arquivo impostos dentro da transação que bloqueia a raiz do operador. ComplianceReview referencia (documentId, organizationId), revisor e decisão imutável por versão, com observação privada quando rejeitado. FKs compostas impedem associação entre tenants. Não são criados requisitos legais predefinidos.
+OperatorProfile acrescenta approvedAt, approvedById e complianceNote. Aprovação explícita só após revisão de todos os documentos atuais; reabertura limpa marcadores atuais, preservando eventos auditados. expiresOn é DATE inclusivo em UTC. Expirado é apresentação calculada e precondição dos gates; não há job que altere o estado persistido automaticamente. Regras completas em [SPRINT_03.md](SPRINT_03.md).
