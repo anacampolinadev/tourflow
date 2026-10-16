@@ -2,7 +2,7 @@
 Plataforma B2B de operações para turismo, em monólito modular Next.js/TypeScript.
 
 ## Estado
-Sprints 01 (Auth/Multi-tenant) e 02 (Admin): autenticação por e-mail, isolamento por organização, papéis e gestão administrativa de operadores. Schema Prisma/PostgreSQL, migração, auditoria e testes incluídos. Ver [evidências e limites](docs/SPRINT_01_02.md); confirmar CI antes de usar os novos fluxos.
+Sprints 01 (Auth/Multi-tenant) e 02 (Admin): autenticação por e-mail, isolamento por organização, papéis e gestão administrativa de operadores. Schema Prisma/PostgreSQL, migração, auditoria e testes incluídos. CI aprovada com 33 testes unitários, 7 de integração e 3 de navegador; ver [evidências e limites](docs/SPRINT_01_02.md).
 Compliance, white-label, reservas, dispatch e publicação ficam para os próximos sprints. Sem deploy nesta entrega.
 
 ## Executar localmente

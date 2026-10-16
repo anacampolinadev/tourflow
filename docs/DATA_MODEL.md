@@ -1,7 +1,7 @@
 # Modelo de dados — conceitual
-Nenhuma tabela, enum de domínio, migration ou banco foi implementado no Sprint 00. No rascunho dos Sprints 01/02 há schema e migração inicial ainda não executados em prisma/. A especificação conceitual abaixo continua orientando os sprints futuros.
+Nenhuma tabela, enum de domínio, migration ou banco foi implementado no Sprint 00. Os Sprints 01/02 acrescentam schema e migração em prisma/, aplicados e validados em PostgreSQL descartável pela CI. A especificação conceitual abaixo continua orientando os sprints futuros.
 
-## Rascunho físico 01/02
+## Modelo físico 01/02
 User (global, active e platformRole), Account, Session e VerificationToken compatíveis com Auth.js; LoginThrottle (janela atômica por e-mail com chave HMAC, sem e-mail em claro); Organization; OrganizationMember (role e active, único por organização/utilizador); OperatorProfile (contatos, plano, mensalidade em cêntimos, estado e version para concorrência); AuditLog (ator obrigatório e organização opcional apenas para eventos de plataforma).
 Organização não é criada implicitamente no login. SUPER_ADMIN é papel global separado dos quatro papéis de vínculo. O responsável inicial recebe vínculo OPERATOR_OWNER no cadastro administrativo; editar contacto não transfere acesso. Referências operacionais restantes serão adicionadas nos respectivos sprints. Sessões expiram em 8h; links em 15 minutos, token de uso único gerido pelo adapter Auth.js. As verificações de utilizador/vínculo ativo são feitas novamente no servidor por pedido.
 

@@ -18,7 +18,8 @@ Sprints 01 (Auth/Multi-tenant) e 02 (Admin), com acesso ao GitHub do TourFlow. S
 - npm run check: lint, typecheck, 33 testes unitários e build de produção passaram.
 - prisma validate: schema válido.
 - Auditoria de produção: zero vulnerabilidades. Cinco alertas high remanescentes são da cadeia de ferramentas de lint, conforme VALIDATION.md.
-- Docker local não iniciou; testes de persistência e navegador serão executados no PostgreSQL/Mailpit do GitHub Actions. Conferir a CI antes de considerar os dois sprints concluídos.
+- CI aprovada: 33 testes unitários, 7 de integração PostgreSQL e 3 de navegador Chromium. Migração aplicada e comparação banco/schema sem diferenças. Evidência: https://github.com/anacampolinadev/tourflow/actions/runs/38970187923 (implementação 188fcb4).
+- Docker local não iniciou porque falta o WSL no Windows. A execução remota acima validou os serviços sem instalar componentes do Windows. Os Sprints 01 e 02 estão implementados e validados na proposta de alteração; main permanece aguardando revisão/merge.
 
 ## Testes adicionados
 Unitários: isolamento de contexto, rejeição de utilizador/vínculo inativo, papéis, elevação de privilégios, validação estrita, dinheiro e gates de estado.
