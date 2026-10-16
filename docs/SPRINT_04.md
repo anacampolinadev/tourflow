@@ -20,4 +20,6 @@ Audit metadata contém identificadores, versões e transições, sem preços, co
 
 ## Verificação
 Local: lint sem avisos, tipos, 51 unitários e build passaram. Integração PostgreSQL e Chromium são executados pela CI em serviços descartáveis. Testes novos cobrem dinheiro, idiomas, capacidades, recolha, estados, tenant, papéis, duplicidade, revogação, concorrência, auditoria e paginação. Navegador: login real por e-mail, cadastro/edição dos três recursos, filtros, estados, modo de leitura, dispatcher, acesso indevido e largura mobile.
-Resultado remoto ainda em validação. Sem deploy ou componentes novos no Windows; Docker local continua indisponível por ausência de WSL.
+Aprovado na [CI 38976279662](https://github.com/anacampolinadev/tourflow/actions/runs/38976279662), implementação cee3d83: instalação limpa, migrações incrementais, comparação banco/schema sem diferenças, lint, tipos, build, 51 testes unitários, 30 de integração PostgreSQL e 6 de navegador Chromium. Os 87 testes incluem os sprints anteriores. Artefacto browser-test-results: operator-core.png e operator-core-mobile.png; o cenário do responsável também verifica ausência de erros JavaScript no navegador. Sem deploy ou componentes novos no Windows; Docker local continua indisponível por ausência de WSL.
+
+PR #3 baseado no PR #2, ambos para revisão. Integrar os PRs #1 e #2 antes deste PR. O Sprint 05 requer nova autorização; esta entrega não fez merge ou deploy.
