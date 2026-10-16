@@ -4,7 +4,7 @@ import type { OperatorProfile, Prisma } from "@/generated/prisma/client";
 import { getDb } from "@/lib/db";
 import { currentTenant, requireCurrentSuperAdmin, requirePermission } from "@/modules/auth";
 import { OperatorConflict } from "@/modules/tenants";
-import { ComplianceError, MAX_DOCUMENTS, MAX_REQUIREMENTS, MAX_TENANT_BYTES, canApproveDocuments, canGenerateWorkspace, canSubmitDocuments, correctionInput, decisionInput, expiryDate, isDocumentValid, requirementInput, validateUpload, versionInput } from "./domain";
+import { ComplianceError, MAX_DOCUMENTS, MAX_REQUIREMENTS, MAX_TENANT_BYTES, canApproveDocuments, canGenerateWorkspace, canSubmitDocuments, correctionInput, decisionInput, expiryDate, hasValidDocumentApproval, isDocumentValid, requirementInput, validateUpload, versionInput } from "./domain";
 
 export type ComplianceScope = "owner" | "admin";
 async function authorize(organizationId: string, scope: ComplianceScope) {
@@ -128,4 +128,13 @@ export async function downloadDocument(organizationId: string, documentId: strin
     if (document) await tx.auditLog.create({ data: { organizationId, actorId: actor.id, action: "compliance.document.downloaded", metadata: { admin: scope === "admin", documentId } } });
     return document;
   });
+}
+
+// Trusted server composition: caller must authorize and lock OperatorProfile first.
+export async function assertSandboxBookingApproval(tx: Prisma.TransactionClient, organizationId: string, now = new Date()) {
+  const profile = await tx.operatorProfile.findUnique({ where: { organizationId } });
+  if (!profile || !["APPROVED", "SANDBOX", "CLIENT_REVIEW"].includes(profile.status) ||
+      !hasValidDocumentApproval(profile, await requirements(tx, organizationId), now)) {
+    throw new ComplianceError("Reservas de teste exigem aprovação documental válida. A operação pública ainda não está disponível.");
+  }
 }

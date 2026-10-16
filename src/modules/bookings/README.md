@@ -1,5 +1,3 @@
 # bookings
 
-Responsabilidade futura: Reservas transacionais, passageiros e eventos.
-
-Sprint 00: fronteira reservada, sem implementação ou exports. Ao implementar, expor API pública via index.ts e manter detalhes internos privados. Dados operacionais devem usar contexto de organização validado no servidor. Ver docs/ARCHITECTURE.md.
+Motor transacional de reservas internas SANDBOX. API pública em index.ts: createBooking, cancelBooking e readBookings. Domain schemas, preço e transições em domain.ts; persistência/locks/gates em service.ts. Ver docs/SPRINT_06.md.

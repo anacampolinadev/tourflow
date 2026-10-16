@@ -29,3 +29,6 @@ Cadastros de serviços (preços, duração, capacidade, encontro/recolha e idiom
 
 ## Sprint 05 — Agenda e disponibilidade
 Saídas semanais no fuso do operador, associações serviço/veículo, janelas dos motoristas, bloqueios, pausas e consulta determinística com motivos e alternativas. Modo interno de planeamento, sem criar/confirmar reservas ou conceder aptidão documental. Reservas e distribuição continuam para as próximas etapas. Ver [contratos e verificações](SPRINT_05.md).
+
+## Sprint 06 — Reservas internas
+Motor transacional em SANDBOX, preço/condições preservados, ocupação integral de veículo/motorista, idempotência, cancelamento e histórico. Exige aprovação documental válida; não publica nem vende ao público. Ver [contratos e limites](SPRINT_06.md).

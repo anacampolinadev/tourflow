@@ -3,5 +3,5 @@ export { operatorStatuses, statusLabels, allowedNextStatuses, InvalidTransition 
 export { OperatorConflict, priceToCents } from "./input";
 export type { OperatorStatus } from "./status";
 export { CatalogConflict, CatalogUnavailable, catalogQuery, recordVersion } from "./catalog-domain";
-export { lockOperatorCatalog } from "./catalog";
+export { lockOperatorCatalog, protectBookingCommitments } from "./catalog";
 export { readOperatorCatalog } from "./catalog-read";

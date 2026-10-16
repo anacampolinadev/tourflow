@@ -2,7 +2,7 @@ import "server-only";
 import { Prisma } from "@/generated/prisma/client";
 import { getDb } from "@/lib/db";
 import { currentTenant, requirePermission } from "@/modules/auth";
-import { CatalogConflict, catalogQuery, lockOperatorCatalog, recordVersion } from "@/modules/tenants";
+import { CatalogConflict, protectBookingCommitments, catalogQuery, lockOperatorCatalog, recordVersion } from "@/modules/tenants";
 import { driverInput, transitionDriver } from "./domain";
 
 export async function listDrivers(organizationId: string, raw: unknown = {}) {
@@ -30,6 +30,7 @@ export async function createDriver(organizationId: string, raw: unknown) {
   try {
     return await getDb().$transaction(async (tx) => {
       await lockOperatorCatalog(tx, context.organizationId);
+      await protectBookingCommitments(tx, context.organizationId);
       const record = await tx.driver.create({ data: { organizationId: context.organizationId, ...input } });
       await tx.auditLog.create({ data: { organizationId: context.organizationId, actorId: context.actorId, action: "driver.created", metadata: { resourceId: record.id, version: record.version } } });
       return record;
@@ -48,6 +49,7 @@ export async function updateDriver(organizationId: string, id: string, expectedV
   try {
     await getDb().$transaction(async (tx) => {
       await lockOperatorCatalog(tx, context.organizationId);
+      await protectBookingCommitments(tx, context.organizationId);
       const changed = await tx.driver.updateMany({ where: { organizationId: context.organizationId, id, version: expectedVersion }, data: { ...input, version: { increment: 1 } } });
       if (changed.count !== 1) throw new CatalogConflict();
       await tx.auditLog.create({ data: { organizationId: context.organizationId, actorId: context.actorId, action: "driver.updated", metadata: { resourceId: id, version: expectedVersion + 1 } } });
@@ -64,6 +66,7 @@ export async function changeDriverStatus(organizationId: string, id: string, exp
   recordVersion.parse(expectedVersion);
   await getDb().$transaction(async (tx) => {
     await lockOperatorCatalog(tx, context.organizationId);
+    await protectBookingCommitments(tx, context.organizationId);
     const record = await tx.driver.findFirst({ where: { organizationId: context.organizationId, id, version: expectedVersion } });
     if (!record) throw new CatalogConflict();
     const next = transitionDriver(record.status, rawStatus);

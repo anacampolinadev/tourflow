@@ -1,6 +1,6 @@
 # TourFlow — instruções para agentes
 
-Leia primeiro docs/CODEX_RULES.md, docs/PRODUCT.md e docs/ARCHITECTURE.md. Consulte docs/DATA_MODEL.md quando a tarefa envolver persistência. Sprints 01–04 validados. O utilizador autorizou Sprint 05 — Agenda e disponibilidade determinística. Não avançar ao Sprint 06 sem nova autorização. Consulte docs/SPRINT_05.md e as evidências anteriores.
+Leia primeiro docs/CODEX_RULES.md, docs/PRODUCT.md e docs/ARCHITECTURE.md. Consulte docs/DATA_MODEL.md quando a tarefa envolver persistência. Sprints 01–06 validados em PRs empilhados. Última entrega: Sprint 06 — Booking Engine. Não avançar ao Sprint 07 sem novo pedido. Consulte docs/SPRINT_06.md e as evidências anteriores.
 
 <!-- BEGIN:nextjs-agent-rules -->
 

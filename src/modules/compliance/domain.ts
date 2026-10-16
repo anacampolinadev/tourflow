@@ -33,7 +33,11 @@ export function canApproveDocuments(status: OperatorStatus, requirements: Requir
 }
 
 export function canGenerateWorkspace(profile: { status: OperatorStatus; approvedAt: Date | null; approvedById: string | null }, requirements: RequirementSnapshot[], now = new Date()): boolean {
-  return profile.status === "APPROVED" && Boolean(profile.approvedAt && profile.approvedById) && canApproveDocuments("UNDER_REVIEW", requirements, now);
+  return profile.status === "APPROVED" && hasValidDocumentApproval(profile, requirements, now);
+}
+
+export function hasValidDocumentApproval(profile: { approvedAt: Date | null; approvedById: string | null }, requirements: RequirementSnapshot[], now = new Date()): boolean {
+  return Boolean(profile.approvedAt && profile.approvedById) && canApproveDocuments("UNDER_REVIEW", requirements, now);
 }
 
 export function expiryDate(raw: unknown): Date | null {
