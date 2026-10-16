@@ -29,3 +29,7 @@ Derivar organização de identidade validada no servidor; nunca confiar isoladam
 Reservas e recursos serão gravados em transação, com proteção contra concorrência e idempotência nas ações críticas.
 Disponibilidade e dispatch são determinísticos; Alana não acessa banco diretamente. n8n orquestra integrações e não contém a lógica crítica.
 White-label usa configuração por tenant e não cópias do código.
+
+## Compliance — Sprint 03
+Módulo compliance ativo com domínio puro e casos de uso transacionais. Páginas e server actions compõem esses casos; permissões são verificadas também no serviço. Bytes privados em PostgreSQL, limite de 2 MiB por ficheiro/25 MiB por operador, histórico limitado a 50 versões; sem filesystem público ou efémero. Downloads autenticados como anexo. Decisão temporária adequada ao MVP limitado; migrar para object storage privado e acrescentar análise de malware quando o volume/garantias exigirem. Não há análise de malware nesta entrega.
+Escritas de compliance e edição administrativa partilham OperatorProfile.version. Atualização condicional da raiz serializa alterações e audit log na transação; gates de submissão e aprovação verificam checklist completo, versão atual e validade. canGenerateWorkspace é contrato puro para uma etapa futura e exige aprovação humana válida; não existe ação de geração. Ver [Sprint 03](SPRINT_03.md).

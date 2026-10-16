@@ -20,6 +20,7 @@ export default async function OperatorDetail({ params, searchParams }: { params:
     <OperatorForm action={saveOperator.bind(null, organizationId, profile.version)} values={{ name: organization.name, ...profile }} />
     <h2>Estado do operador</h2>
     {options.length ? <StatusForm action={saveStatus.bind(null, organizationId, profile.version)} options={options} /> : <p>Não há transições disponíveis nesta etapa.</p>}
-    <p>A aprovação documental, a geração do ambiente e a entrada em produção permanecem bloqueadas.</p>
+    <p><Link href={`/admin/operators/${organizationId}/documents`}>Rever documentação</Link></p>
+    <p>A geração do ambiente e a entrada em produção serão implementadas nas próximas etapas.</p>
   </main>;
 }

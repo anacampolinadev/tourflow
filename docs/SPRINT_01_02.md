@@ -1,7 +1,7 @@
 # Sprints 01 e 02 — autenticação, multi-tenancy e Admin
 
 ## Escopo autorizado
-Sprints 01 (Auth/Multi-tenant) e 02 (Admin), com acesso ao GitHub do TourFlow. Sprint 03 (Compliance) fora do escopo. Branch: sprint-01-02-auth-admin.
+Sprints 01 (Auth/Multi-tenant) e 02 (Admin), com acesso ao GitHub do TourFlow. Sprint 03 (Compliance) fora do escopo deste PR; autorizado depois e documentado em SPRINT_03.md. Branch: sprint-01-02-auth-admin.
 
 ## Implementação
 - Prisma 7.10.1/PostgreSQL, migração inicial, cliente gerado fora do Git e bootstrap explícito do primeiro admin, com bloqueio transacional de concorrência.

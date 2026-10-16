@@ -1,6 +1,6 @@
 # TourFlow — instruções para agentes
 
-Leia primeiro docs/CODEX_RULES.md, docs/PRODUCT.md e docs/ARCHITECTURE.md. Consulte docs/DATA_MODEL.md quando a tarefa envolver persistência. Execute somente os sprints autorizados e reporte verificações e limitações. Sprints 01 e 02 autorizados pelo utilizador nesta tarefa; Sprint 03 ainda não autorizado. Consulte docs/SPRINT_01_02.md para o estado das verificações antes de retomar.
+Leia primeiro docs/CODEX_RULES.md, docs/PRODUCT.md e docs/ARCHITECTURE.md. Consulte docs/DATA_MODEL.md quando a tarefa envolver persistência. Sprints 01/02 validados; o utilizador autorizou continuar com Sprint 03 — Compliance. Não avançar ao Sprint 04 sem nova autorização. Consulte docs/SPRINT_03.md e docs/SPRINT_01_02.md para o estado das verificações.
 
 <!-- BEGIN:nextjs-agent-rules -->
 

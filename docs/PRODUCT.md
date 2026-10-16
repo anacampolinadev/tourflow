@@ -15,8 +15,11 @@ A IA consulta ferramentas; o backend decide disponibilidade e confirma reservas.
 Somente fundação: Next.js/TypeScript, módulos vazios documentados, contexto persistente, lint, tipos, testes básicos, CI e página inicial neutra. Não há autenticação, RBAC, banco, CRUD, reservas, dispatch, documentos enviados ou integrações.
 
 ## Sprints 01 e 02 — implementados e validados em PR
-Autorizados pelo utilizador após a entrega inicial. Autenticação/multi-tenancy e Admin implementados; instalação pelo lockfile, lint, tipos, unitários e build validados. Persistência PostgreSQL, concorrência, isolamento e fluxo real de login/Admin passaram na CI. Ver [estado e verificações](SPRINT_01_02.md). O Sprint 03 (Compliance) permanece fora do escopo. Não houve deploy de produção.
+Autorizados pelo utilizador após a entrega inicial. Autenticação/multi-tenancy e Admin implementados; instalação pelo lockfile, lint, tipos, unitários e build validados. Persistência PostgreSQL, concorrência, isolamento e fluxo real de login/Admin passaram na CI. Ver [estado e verificações](SPRINT_01_02.md). O Sprint 03 foi autorizado depois; ver [Compliance](SPRINT_03.md). Não houve deploy de produção.
 
 ## Sequência aprovada
 00 Foundation; 01 Auth/Multi-tenant; 02 Admin; 03 Compliance; 04 Operator Core; 05 Availability; 06 Booking; 07 Dispatch; 08 Operator UI; 09 Driver PWA; 10 White Label; 11 Alana Core; 12 Alana Tools; 13 Sandbox/QA; 14 Managed Ops; 15 Pilot.
 Cada sprint exige critérios de aceite e verificações antes de avançar. O MVP completo só estará pronto após o fluxo real de onboarding → aprovação → cadastro de recursos → atendimento → disponibilidade → reserva → dispatch → aceite → execução → relatório.
+
+## Sprint 03 — Compliance
+Checklist privado por operador, documentos versionados, correções, revisão e aprovação humana. O responsável envia; o Admin determina requisitos e decide a aprovação final. Documentos expirados impedem a liberação para geração. Sem geração de ambiente, cadastro operacional ou publicação. Ver [contratos e limites](SPRINT_03.md).

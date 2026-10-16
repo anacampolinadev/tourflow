@@ -7,7 +7,7 @@
 6. Multi-tenancy e RBAC devem ser implementados antes dos fluxos operacionais. OrganizationId derivado de contexto validado. Testar deliberadamente acesso entre tenants e elevação de privilégios.
 7. Disponibilidade é determinística. Reservas exigem transações, concorrência segura e idempotência. Alana confirma apenas após sucesso real da ferramenta.
 8. Transições de estado passam por funções de domínio. Gates humanos de compliance, validação do cliente e GO LIVE permanecem explícitos.
-9. Testar comportamento e riscos relevantes; não criar testes que apenas espelham implementação. A fundação possui contratos estruturais; os sprints de autenticação e Admin exigem também testes de acesso, isolamento, concorrência e persistência, além do fluxo real de login.
+9. Testar comportamento e riscos relevantes; não criar testes que apenas espelham implementação. A fundação possui contratos estruturais; autenticação, Admin e Compliance exigem testes de acesso, isolamento, concorrência e persistência, além do fluxo real de login. Compliance verifica também downloads privados, versões, quotas, validade e aprovação humana.
 10. Antes de concluir: npm run lint, npm run typecheck, npm test e npm run build. Executar integração/E2E quando a mudança exigir. Relatar comandos, resultados, arquivos/áreas alterados e riscos; nunca declarar uma verificação não executada.
 11. Atualizar documentos quando houver decisão ou mudança de contrato. Documentar claramente o que está implementado e o que é plano.
 12. Definition of Done: escopo e aceite atendidos, verificações aprovadas, nenhuma credencial no diff, documentação coerente e limitações relatadas.

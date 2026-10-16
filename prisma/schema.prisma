@@ -49,6 +49,9 @@ model User {
   sessions Session[]
   memberships OrganizationMember[]
   auditLogs AuditLog[]
+  documentUploads ComplianceDocument[] @relation("DocumentUploader")
+  documentReviews ComplianceReview[]
+  operatorApprovals OperatorProfile[] @relation("OperatorApprover")
 }
 
 model Account {
@@ -101,6 +104,7 @@ model Organization {
   members OrganizationMember[]
   operator OperatorProfile?
   auditLogs AuditLog[]
+  complianceRequirements ComplianceRequirement[]
 }
 
 model OrganizationMember {
@@ -128,8 +132,75 @@ model OperatorProfile {
   primaryLanguage String @default("pt")
   status OperatorStatus @default(LEAD)
   version Int @default(0)
+  approvedAt DateTime?
+  approvedById String?
+  complianceNote String?
+  approvedBy User? @relation("OperatorApprover", fields: [approvedById], references: [id], onDelete: Restrict)
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
   @@index([status])
+}
+
+enum DocumentStatus {
+  PENDING
+  UNDER_REVIEW
+  APPROVED
+  REJECTED
+  EXPIRING
+  EXPIRED
+}
+
+enum ReviewDecision {
+  APPROVED
+  REJECTED
+}
+
+model ComplianceRequirement {
+  id String @id @default(cuid())
+  organizationId String
+  title String
+  requiresExpiry Boolean @default(false)
+  active Boolean @default(true)
+  createdAt DateTime @default(now())
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  documents ComplianceDocument[]
+  @@unique([id, organizationId])
+  @@index([organizationId, active])
+}
+
+model ComplianceDocument {
+  id String @id @default(cuid())
+  organizationId String
+  requirementId String
+  revision Int
+  fileName String
+  mimeType String
+  size Int
+  sha256 String
+  data Bytes
+  expiresOn DateTime? @db.Date
+  status DocumentStatus @default(PENDING)
+  uploadedById String
+  createdAt DateTime @default(now())
+  requirement ComplianceRequirement @relation(fields: [requirementId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  uploadedBy User @relation("DocumentUploader", fields: [uploadedById], references: [id], onDelete: Restrict)
+  review ComplianceReview?
+  @@unique([requirementId, revision])
+  @@unique([id, organizationId])
+  @@index([organizationId])
+}
+
+model ComplianceReview {
+  id String @id @default(cuid())
+  organizationId String
+  documentId String @unique
+  reviewerId String
+  decision ReviewDecision
+  note String?
+  createdAt DateTime @default(now())
+  document ComplianceDocument @relation(fields: [documentId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  reviewer User @relation(fields: [reviewerId], references: [id], onDelete: Restrict)
+  @@unique([documentId, organizationId])
+  @@index([organizationId, createdAt])
 }
 
 model AuditLog {
