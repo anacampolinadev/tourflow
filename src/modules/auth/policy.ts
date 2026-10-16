@@ -26,10 +26,10 @@ export function resolveTenant(actor: Actor | null, organizationId: string, membe
   return { actorId: user.id, organizationId, role: membership.role };
 }
 
-export type Permission = "organization:read" | "members:manage" | "operations:manage" | "assignments:own" | "compliance:manage";
+export type Permission = "organization:read" | "members:manage" | "operations:manage" | "assignments:own" | "compliance:manage" | "catalog:manage" | "resources:manage";
 const permissions: Record<MemberRole, readonly Permission[]> = {
-  OPERATOR_OWNER: ["organization:read", "members:manage", "operations:manage", "compliance:manage"],
-  OPERATOR_DISPATCHER: ["organization:read", "operations:manage"],
+  OPERATOR_OWNER: ["organization:read", "members:manage", "operations:manage", "compliance:manage", "catalog:manage", "resources:manage"],
+  OPERATOR_DISPATCHER: ["organization:read", "operations:manage", "resources:manage"],
   OPERATOR_VIEWER: ["organization:read"],
   DRIVER: ["assignments:own"],
 };

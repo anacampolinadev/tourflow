@@ -1,5 +1,3 @@
 # vehicles
 
-Responsabilidade futura: Veículos, capacidade e documentos.
-
-Sprint 00: fronteira reservada, sem implementação ou exports. Ao implementar, expor API pública via index.ts e manter detalhes internos privados. Dados operacionais devem usar contexto de organização validado no servidor. Ver docs/ARCHITECTURE.md.
+Sprint 04 — Veículos: nome, tipo, matrícula canónica única no tenant, capacidade, características e ativo. Schemas em domain.ts e casos transacionais tenant-scoped em service.ts; API pública em index.ts. Sem agenda, atribuição de motorista ou validação documental. Ver docs/SPRINT_04.md para contratos, permissões e limites.

@@ -23,3 +23,6 @@ Cada sprint exige critérios de aceite e verificações antes de avançar. O MVP
 
 ## Sprint 03 — Compliance
 Checklist privado por operador, documentos versionados, correções, revisão e aprovação humana. O responsável envia; o Admin determina requisitos e decide a aprovação final. Documentos expirados impedem a liberação para geração. Sem geração de ambiente, cadastro operacional ou publicação. Ver [contratos e limites](SPRINT_03.md).
+
+## Sprint 04 — Operator Core
+Cadastros de serviços (preços, duração, capacidade, encontro/recolha e idiomas), veículos e motoristas, isolados por organização. Responsável gere todos; dispatcher gere recursos; viewer lê. Estados e desativação preservam histórico. Cadastro de motorista não concede conta de acesso. Não há agenda, reservas, dispatch ou publicação nesta entrega. Ver [contratos e verificações](SPRINT_04.md).
