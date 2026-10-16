@@ -1,7 +1,7 @@
 # Validação
 
 ## Sprints 01 e 02
-Código validado na [CI 38970187923](https://github.com/anacampolinadev/tourflow/actions/runs/38970187923), implementação 188fcb4: instalação limpa, lint, tipos, build, migração aplicada, comparação banco/schema sem diferenças, 33 testes unitários, 7 testes de integração PostgreSQL e 3 testes completos em Chromium. O navegador usa login real por e-mail no Mailpit, sem bypass de autenticação. Docker local não iniciou por ausência do WSL; não foram instalados componentes do Windows. Não há deploy de produção.
+Código validado na [CI 38970643586](https://github.com/anacampolinadev/tourflow/actions/runs/38970643586), implementação 1319434: instalação limpa, lint, tipos, build, migração aplicada, comparação banco/schema sem diferenças, 33 testes unitários, 7 testes de integração PostgreSQL e 3 testes completos em Chromium. O navegador usa login real por e-mail no Mailpit, sem bypass de autenticação, e verifica nomes longos sem overflow da página. Docker local não iniciou por ausência do WSL; não foram instalados componentes do Windows. Não há deploy de produção.
 
 Dependências de produção: zero vulnerabilidades no npm audit após atualizar o transporte SMTP para Nodemailer 10.1.2, com overrides restritos para os peers do Auth.js. O envio SMTP com essa versão passou no teste real. Cinco alertas high continuam nas dependências de desenvolvimento de lint, descritos abaixo. Auth.js beta está fixado em 5.0.0-beta.32; Prisma/client/adapter em 7.10.1.
 
