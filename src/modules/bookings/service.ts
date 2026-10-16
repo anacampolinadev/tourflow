@@ -42,7 +42,7 @@ export async function createBooking(organizationId: string, raw: unknown) {
     await tx.bookingEvent.create({ data: { organizationId: context.organizationId, bookingId: booking.id, type: "CONFIRMED" } });
     await tx.auditLog.create({ data: { organizationId: context.organizationId, actorId: context.actorId, action: "booking.confirmed", metadata: { bookingId: booking.id, mode: "SANDBOX" } } });
     return booking;
-  });
+  }, { isolationLevel: "ReadCommitted" });
 }
 
 export async function cancelBooking(organizationId: string, bookingId: string, version: number) {
@@ -60,7 +60,7 @@ export async function cancelBooking(organizationId: string, bookingId: string, v
     await tx.bookingEvent.create({ data: { organizationId: context.organizationId, bookingId, type: "CANCELLED" } });
     await tx.auditLog.create({ data: { organizationId: context.organizationId, actorId: context.actorId, action: "booking.cancelled", metadata: { bookingId } } });
     return cancelled;
-  });
+  }, { isolationLevel: "ReadCommitted" });
 }
 
 export async function readBookings(organizationId: string, page = 1) {

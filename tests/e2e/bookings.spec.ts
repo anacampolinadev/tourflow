@@ -61,6 +61,9 @@ test("real authenticated booking, failed conflict, cancellation and freed capaci
   await db.operatorProfile.update({ where: { organizationId: org }, data: { status: "ONBOARDING" } });
   await page.getByRole("button", { name: "Confirmar reserva de teste", exact: true }).click();
   await expect(page.locator("main").getByRole("alert")).toContainText("aprovação documental");
+  await expect(page.getByLabel("Nome do cliente")).toHaveValue("Cliente de Teste");
+  await expect(page.getByLabel("Serviço", { exact: true })).toHaveValue(serviceId);
+  await expect(page.getByLabel("Passageiros")).toHaveValue("4");
   expect(await db.booking.count({ where: { organizationId: org } })).toBe(0);
   await db.operatorProfile.update({ where: { organizationId: org }, data: { status: "APPROVED" } });
   await page.getByRole("button", { name: "Confirmar reserva de teste", exact: true }).click();

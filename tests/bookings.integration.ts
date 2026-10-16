@@ -8,7 +8,7 @@ vi.mock("../src/modules/auth/session", () => ({ auth: async () => session.userId
 import { getDb } from "../src/lib/db";
 import { AccessDenied } from "../src/modules/auth";
 import { createBooking, cancelBooking, readBookings } from "../src/modules/bookings";
-import { checkAvailability, setCalendarTimeZone } from "../src/modules/availability";
+import { addResourceBlock, checkAvailability, deactivateCalendarEntry, setCalendarTimeZone } from "../src/modules/availability";
 import { updateService } from "../src/modules/services";
 const suffix = randomUUID(), actorId = `booking-owner-${suffix}`, outsider = `booking-out-${suffix}`;
 const orgs: string[] = [];
@@ -95,7 +95,7 @@ describe("transactional sandbox bookings", () => {
     expect((await totals()).map((count, index) => count - before[index]!)).toEqual([1, 1, 1, 1, 1]);
     await releaseAll();
   });
-  it("honors buffers across services and half-open boundaries", async () => {
+  it("honors buffers across departures and half-open boundaries", async () => {
     await createBooking(org, input());
     await expect(createBooking(org, input("12:00"))).rejects.toThrow("Sem veículo");
     const adjacent = await createBooking(org, input("12:30")); expect(adjacent.status).toBe("CONFIRMED");
@@ -125,8 +125,30 @@ describe("transactional sandbox bookings", () => {
     const db = getDb(), first = await createBooking(org, input()), second = await createBooking(org, input("17:00"));
     const firstHold = await db.bookingOccupancy.findUniqueOrThrow({ where: { bookingId: first.id } });
     await expect(db.bookingOccupancy.update({ where: { bookingId: second.id }, data: { startsAt: firstHold.startsAt, endsAt: firstHold.endsAt } })).rejects.toThrow();
+    const spareVehicle = await db.vehicle.create({ data: { organizationId: org, name: "Spare", type: "JEEP", registration: "BKSPARE", capacity: 6, features: [], active: true } });
+    const spareDriver = await db.driver.create({ data: { organizationId: org, name: "Spare", email: `spare-${suffix}@example.test`, phone: "+351912345678", languages: ["en"], status: "ACTIVE" } });
+    await db.bookingOccupancy.update({ where: { bookingId: second.id }, data: { vehicleId: spareVehicle.id } });
+    // Different vehicles still cannot occupy the same driver.
+    await expect(db.bookingOccupancy.update({ where: { bookingId: second.id }, data: { startsAt: firstHold.startsAt, endsAt: firstHold.endsAt } })).rejects.toThrow();
+    await db.bookingOccupancy.update({ where: { bookingId: second.id }, data: { vehicleId, driverId: spareDriver.id } });
+    // Different drivers still cannot occupy the same vehicle.
+    await expect(db.bookingOccupancy.update({ where: { bookingId: second.id }, data: { startsAt: firstHold.startsAt, endsAt: firstHold.endsAt } })).rejects.toThrow();
     await expect(db.booking.update({ where: { id: first.id }, data: { organizationId: other } })).rejects.toThrow();
     await releaseAll();
+  });
+  it("serializes a booking racing a resource block on the same tenant root", async () => {
+    const db = getDb(), profile = await db.operatorProfile.findUniqueOrThrow({ where: { organizationId: org } });
+    const results = await Promise.allSettled([
+      createBooking(org, input()),
+      addResourceBlock(org, profile.calendarVersion, { resourceType: "vehicle", resourceId: vehicleId, startLocal: `${date}T09:00`, endLocal: `${date}T13:00`, reason: "Race fixture" }),
+    ]);
+    expect(results.filter((result) => result.status === "fulfilled")).toHaveLength(1);
+    await releaseAll();
+    for (const block of await db.resourceBlock.findMany({ where: { organizationId: org, active: true } })) {
+      const current = await db.operatorProfile.findUniqueOrThrow({ where: { organizationId: org } });
+      await deactivateCalendarEntry(org, current.calendarVersion, "block", block.id);
+    }
+    expect((await checkAvailability(org, query())).available).toBe(true);
   });
   it("prevents catalog/calendar edits silently invalidating future commitments", async () => {
     await createBooking(org, input());

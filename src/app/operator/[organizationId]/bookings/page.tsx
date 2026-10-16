@@ -21,7 +21,7 @@ export default async function Bookings({ params, searchParams }: { params: Promi
     <p role="note">Ambiente de teste interno. Estas reservas ocupam a agenda de teste; não representam vendas nem autorizam operação pública. É necessária aprovação documental válida. Cada reserva ocupa um veículo e um motorista para todo o grupo. A distribuição será adicionada na próxima etapa.</p>
     {query.saved === "1" ? <p role="status">Reserva guardada.</p> : null}
     {canManage ? <details><summary>Nova reserva de teste</summary><p>O preço é calculado pelo serviço ao confirmar. Sem cobrança.</p>
-      <ResourceForm label="Confirmar reserva de teste" action={bookingAction.bind(null, organizationId, randomUUID())} fields={[
+      <ResourceForm preserveOnError label="Confirmar reserva de teste" action={bookingAction.bind(null, organizationId, randomUUID())} fields={[
         { name: "serviceId", label: "Serviço", type: "select", value: "", options: [{ value: "", label: "Selecione um serviço" }, ...data.organization.services.map((service) => ({ value: service.id, label: `${service.name} · ${money(service.basePriceCents, service.currency)} ${service.pricingType === "PER_PERSON" ? "por pessoa" : "por grupo"}` }))] },
         { name: "date", label: "Data", type: "date", value: "", required: true },
         { name: "time", label: "Hora de saída", type: "time", value: "", required: true },
