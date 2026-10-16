@@ -94,6 +94,7 @@ test("real email login, operator creation, edit, status, logout and cross-tenant
   await expect(page.locator("main strong")).toHaveText("Contratado");
   expect((await db.operatorProfile.findUniqueOrThrow({ where: { organizationId: org.id } })).status).toBe("CONTRACTED");
   expect(await db.auditLog.count({ where: { organizationId: org.id, action: "operator.status.changed" } })).toBe(1);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(page.viewportSize()?.width ?? 1280);
   await page.screenshot({ path: "test-results/operator-admin.png", fullPage: true });
   await page.goto("/workspace");
   await page.getByRole("button", { name: "Sair", exact: true }).click();
