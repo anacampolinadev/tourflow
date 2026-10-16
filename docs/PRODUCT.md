@@ -26,3 +26,6 @@ Checklist privado por operador, documentos versionados, correções, revisão e 
 
 ## Sprint 04 — Operator Core
 Cadastros de serviços (preços, duração, capacidade, encontro/recolha e idiomas), veículos e motoristas, isolados por organização. Responsável gere todos; dispatcher gere recursos; viewer lê. Estados e desativação preservam histórico. Cadastro de motorista não concede conta de acesso. Não há agenda, reservas, dispatch ou publicação nesta entrega. Ver [contratos e verificações](SPRINT_04.md).
+
+## Sprint 05 — Agenda e disponibilidade
+Saídas semanais no fuso do operador, associações serviço/veículo, janelas dos motoristas, bloqueios, pausas e consulta determinística com motivos e alternativas. Modo interno de planeamento, sem criar/confirmar reservas ou conceder aptidão documental. Reservas e distribuição continuam para as próximas etapas. Ver [contratos e verificações](SPRINT_05.md).

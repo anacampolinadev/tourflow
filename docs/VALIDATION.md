@@ -1,5 +1,8 @@
 # Validação
 
+## Sprint 05
+Aprovado na [CI 38979574483](https://github.com/anacampolinadev/tourflow/actions/runs/38979574483), implementação 2c38a79: instalação limpa, geração Prisma, migrações/CHECKs/FKs compostas aplicadas, comparação banco/schema, lint, tipos, build, 68 unitários, 41 de integração PostgreSQL e 8 testes Chromium (117 no total). Inclui regressões, DST, buffers, conflitos, alternativas, papéis e fluxo real da agenda com capturas desktop/mobile e ausência de erros JavaScript no cenário do responsável. Dependências de produção: zero vulnerabilidades na auditoria de 2026-10-17; cinco alertas anteriores de lint sem alteração. Ver [contratos e evidências](SPRINT_05.md).
+
 ## Sprint 04
 Aprovado na [CI 38976279662](https://github.com/anacampolinadev/tourflow/actions/runs/38976279662), implementação cee3d83: npm ci, geração Prisma, migrações incrementais, comparação banco/schema, lint, typecheck, build, 51 unitários, 30 de integração PostgreSQL e 6 testes completos Chromium (87 no total). Inclui regressão dos sprints anteriores, cadastros reais, dinheiro, estados, papéis, isolamento, concorrência, quotas documentais e largura mobile. Sem erros JavaScript no cenário novo do responsável. Ver [contratos e evidências](SPRINT_04.md).
 

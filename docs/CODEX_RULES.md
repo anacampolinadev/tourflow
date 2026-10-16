@@ -22,3 +22,5 @@ Acceptance criteria: comportamento verificável.
 Before finishing: verificações acima e relatório conciso.
 
 Operator Core exige também testes de preço em cêntimos, recolha, idiomas, normalização/duplicidade, transições de motorista e bloqueio de escrita por estado do operador. Conta de motorista não deve ser criada implicitamente por cadastro de contacto. Preservar ordem de bloqueio raiz do operador → recurso quando novos casos de uso partilharem esses dados.
+
+Availability exige testes de DST, meia-noite, buffers, limites semiabertos, cobertura de janelas, associações, estado/idioma/capacidade e isolamento de todas as referências. mode=PLANNING não confirma reservas. Booking futuro deve revalidar disponibilidade e gates dentro da própria transação e incluir ocupações reais. Datas locais usam fuso do operador e horários ambíguos/inexistentes são rejeitados.
