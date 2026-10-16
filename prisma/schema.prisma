@@ -108,6 +108,11 @@ model Organization {
   services Service[]
   vehicles Vehicle[]
   drivers Driver[]
+  timeZone String @default("Europe/Lisbon")
+  serviceSchedules ServiceSchedule[]
+  serviceVehicles ServiceVehicle[]
+  driverAvailability DriverAvailability[]
+  resourceBlocks ResourceBlock[]
 }
 
 model OrganizationMember {
@@ -138,6 +143,7 @@ model OperatorProfile {
   approvedAt DateTime?
   approvedById String?
   complianceNote String?
+  calendarVersion Int @default(0)
   approvedBy User? @relation("OperatorApprover", fields: [approvedById], references: [id], onDelete: Restrict)
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
   @@index([status])
@@ -251,6 +257,8 @@ model Service {
   meetingPoint String
   pickupAvailable Boolean @default(false)
   pickupRules String @default("")
+  schedules ServiceSchedule[]
+  compatibleVehicles ServiceVehicle[]
   languages String[]
   active Boolean @default(false)
   version Int @default(0)
@@ -268,6 +276,8 @@ model Vehicle {
   registration String
   capacity Int
   features String[]
+  compatibleServices ServiceVehicle[]
+  blocks ResourceBlock[]
   active Boolean @default(false)
   version Int @default(0)
   createdAt DateTime @default(now())
@@ -285,6 +295,8 @@ model Driver {
   email String
   languages String[]
   status DriverStatus @default(PENDING)
+  availability DriverAvailability[]
+  blocks ResourceBlock[]
   version Int @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -292,4 +304,61 @@ model Driver {
   @@unique([organizationId, email])
   @@unique([id, organizationId])
   @@index([organizationId, status, name])
+}
+
+model ServiceSchedule {
+  id String @id @default(cuid())
+  organizationId String
+  serviceId String
+  weekday Int
+  departureMinutes Int
+  validFrom DateTime @db.Date
+  validUntil DateTime @db.Date
+  bufferBeforeMinutes Int @default(0)
+  bufferAfterMinutes Int @default(0)
+  active Boolean @default(true)
+  createdAt DateTime @default(now())
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  service Service @relation(fields: [serviceId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  @@index([organizationId, serviceId, active])
+}
+model ServiceVehicle {
+  id String @id @default(cuid())
+  organizationId String
+  serviceId String
+  vehicleId String
+  active Boolean @default(true)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  service Service @relation(fields: [serviceId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  vehicle Vehicle @relation(fields: [vehicleId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  @@unique([organizationId, serviceId, vehicleId])
+  @@index([organizationId, serviceId, active])
+}
+model DriverAvailability {
+  id String @id @default(cuid())
+  organizationId String
+  driverId String
+  startsAt DateTime @db.Timestamptz(3)
+  endsAt DateTime @db.Timestamptz(3)
+  active Boolean @default(true)
+  createdAt DateTime @default(now())
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  driver Driver @relation(fields: [driverId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  @@index([organizationId, startsAt, endsAt])
+  @@index([organizationId, driverId, active])
+}
+model ResourceBlock {
+  id String @id @default(cuid())
+  organizationId String
+  vehicleId String?
+  driverId String?
+  startsAt DateTime @db.Timestamptz(3)
+  endsAt DateTime @db.Timestamptz(3)
+  reason String
+  active Boolean @default(true)
+  createdAt DateTime @default(now())
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  vehicle Vehicle? @relation(fields: [vehicleId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  driver Driver? @relation(fields: [driverId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  @@index([organizationId, startsAt, endsAt])
 }

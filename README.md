@@ -3,7 +3,7 @@ Plataforma B2B de operações para turismo, em monólito modular Next.js/TypeScr
 
 ## Estado
 Sprints 01 (Auth/Multi-tenant) e 02 (Admin): autenticação por e-mail, isolamento por organização, papéis e gestão administrativa de operadores. Schema Prisma/PostgreSQL, migração, auditoria e testes incluídos. CI aprovada com 33 testes unitários, 7 de integração e 3 de navegador; ver [evidências e limites](docs/SPRINT_01_02.md).
-Sprint 03 acrescenta checklist documental, envio privado versionado, revisão, correções e aprovação humana. CI aprovada: 40 testes unitários, 19 de integração e 4 de navegador (63 no total). Ver [escopo e verificações](docs/SPRINT_03.md). Sprint 04 acrescenta cadastro de serviços, veículos e motoristas, validado com 51 unitários, 30 de integração e 6 de navegador (87 no total); ver [escopo e testes](docs/SPRINT_04.md). Agenda, white-label, reservas, dispatch e publicação ficam para as próximas etapas. Sem deploy nesta entrega.
+Sprint 03 acrescenta checklist documental, envio privado versionado, revisão, correções e aprovação humana. CI aprovada: 40 testes unitários, 19 de integração e 4 de navegador (63 no total). Ver [escopo e verificações](docs/SPRINT_03.md). Sprint 04 acrescenta cadastro de serviços, veículos e motoristas, validado com 51 unitários, 30 de integração e 6 de navegador (87 no total); ver [escopo e testes](docs/SPRINT_04.md). Sprint 05 acrescenta agenda e consulta de disponibilidade; ver [contratos e testes](docs/SPRINT_05.md). White-label, reservas, dispatch e publicação ficam para as próximas etapas. Sem deploy nesta entrega.
 
 ## Executar localmente
 Node 24 LTS (26 aceito), npm e Docker Desktop em execução.
@@ -30,7 +30,7 @@ Integração: configurar DATABASE_URL de banco dedicado com nome terminado em _t
 
 ## Estrutura
 - src/app: páginas, layouts e API de autenticação.
-- src/modules: auth, tenants, compliance, services, vehicles e drivers; cinco fronteiras futuras.
+- src/modules: auth, tenants, compliance, services, vehicles, drivers e availability; quatro fronteiras futuras.
 - src/components: formulários reutilizáveis.
 - src/lib: configuração validada e conexão ao banco.
 - src/generated: cliente Prisma gerado, fora do Git.
@@ -46,3 +46,6 @@ No Admin, crie o operador e avance até Em configuração. Abra Rever documenta�
 
 ## Cadastros do operador
 Entre com o e-mail do responsável e abra a organização → Serviços, Veículos ou Motoristas. Prepare preços e recursos desde Em configuração; operadores suspensos/restritos não podem alterar cadastros. Serviços e veículos começam inativos; motoristas começam pendentes e não recebem conta ou convite. A ativação do cadastro não confirma disponibilidade nem aprova documentos. Dispatcher gere veículos/motoristas e consulta serviços; viewer consulta sem alterar. Para retirar um recurso do cadastro ativo, desative-o ou mude o estado; não há exclusão física.
+
+## Agenda e disponibilidade
+Na organização, abra Agenda e disponibilidade. O responsável configura fuso, saídas semanais e veículos compatíveis; responsável/dispatcher registam janelas e bloqueios. A consulta usa passageiros, idioma, capacidades, estado ativo e horário completo com pausas; mostra motivo e até três alternativas em sete dias. Horas ambíguas na mudança da hora são rejeitadas. O resultado é planeamento: não segura recursos, não confirma reserva e não valida documentos individuais. No Sprint 06 a reserva terá de revalidar disponibilidade e gates na própria transação.
