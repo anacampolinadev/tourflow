@@ -2,7 +2,7 @@ import "server-only";
 import type { Prisma } from "@/generated/prisma/client";
 import { getDb } from "@/lib/db";
 import { currentTenant, requirePermission } from "@/modules/auth";
-import { CatalogConflict, lockOperatorCatalog, recordVersion } from "@/modules/tenants";
+import { CatalogConflict, protectBookingCommitments, lockOperatorCatalog, recordVersion } from "@/modules/tenants";
 import { AvailabilityError, MAX_CALENDAR_ENTRIES, availabilityInput, blockInput, dateOnly, dayInterval, driverWindowInput, intervalFromLocal, linkInput, localDate, localToDate, minuteOfDay, scheduleInput, timeZoneInput, tomorrowLocalDate } from "./domain";
 import { evaluateAvailability } from "./engine";
 
@@ -13,6 +13,7 @@ async function write<T>(organizationId: string, version: number, kind: CalendarK
   recordVersion.parse(version);
   return getDb().$transaction(async (tx) => {
     await lockOperatorCatalog(tx, context.organizationId);
+    await protectBookingCommitments(tx, context.organizationId);
     const changed = await tx.operatorProfile.updateMany({ where: { organizationId: context.organizationId, calendarVersion: version }, data: { calendarVersion: { increment: 1 } } });
     if (changed.count !== 1) throw new CatalogConflict();
     const organization = await tx.organization.findUniqueOrThrow({ where: { id: context.organizationId }, select: { timeZone: true } });
@@ -100,17 +101,21 @@ export async function readCalendar(organizationId: string, date?: string) {
 export async function checkAvailability(organizationId: string, raw: unknown) {
   const context = await currentTenant(organizationId); requirePermission(context, "organization:read");
   const input = availabilityInput.parse(raw), now = new Date();
-  return getDb().$transaction(async (tx) => {
-    const organization = await tx.organization.findUniqueOrThrow({ where: { id: context.organizationId }, select: { timeZone: true, operator: { select: { status: true } } } });
-    const start = localToDate(`${input.date}T${input.time}`, organization.timeZone), from = new Date(start.valueOf() - 86400000), until = new Date(start.valueOf() + 10 * 86400000);
-    const [service, schedules, links, drivers, windows, blocks] = await Promise.all([
-      tx.service.findFirst({ where: { id: input.serviceId, organizationId }, select: { id: true, organizationId: true, active: true, durationMinutes: true, capacity: true, languages: true } }),
-      tx.serviceSchedule.findMany({ where: { organizationId, serviceId: input.serviceId, active: true } }),
-      tx.serviceVehicle.findMany({ where: { organizationId, serviceId: input.serviceId, active: true }, select: { vehicle: { select: { id: true, organizationId: true, name: true, active: true, capacity: true } } } }),
-      tx.driver.findMany({ where: { organizationId }, select: { id: true, organizationId: true, name: true, status: true, languages: true } }),
-      tx.driverAvailability.findMany({ where: { organizationId, active: true, startsAt: { lt: until }, endsAt: { gt: from } } }),
-      tx.resourceBlock.findMany({ where: { organizationId, active: true, startsAt: { lt: until }, endsAt: { gt: from } } }),
-    ]);
-    return evaluateAvailability({ organizationId, timeZone: organization.timeZone, operatorStatus: organization.operator?.status ?? "LEAD", service, schedules, vehicles: links.map((link) => link.vehicle), drivers, windows, blocks }, input, now);
-  }, { isolationLevel: "RepeatableRead" });
+  return getDb().$transaction((tx) => availabilityInTransaction(tx, organizationId, input, now), { isolationLevel: "RepeatableRead" });
+}
+// Internal server contract: caller authorizes the tenant and locks its root before writes.
+export async function availabilityInTransaction(tx: Prisma.TransactionClient, organizationId: string, raw: unknown, now = new Date()) {
+  const input = availabilityInput.parse(raw);
+  const organization = await tx.organization.findUniqueOrThrow({ where: { id: organizationId }, select: { timeZone: true, operator: { select: { status: true } } } });
+  const start = localToDate(`${input.date}T${input.time}`, organization.timeZone), from = new Date(start.valueOf() - 86400000), until = new Date(start.valueOf() + 10 * 86400000);
+  const [service, schedules, links, drivers, windows, blocks, occupations] = await Promise.all([
+    tx.service.findFirst({ where: { id: input.serviceId, organizationId }, select: { id: true, organizationId: true, active: true, durationMinutes: true, capacity: true, languages: true } }),
+    tx.serviceSchedule.findMany({ where: { organizationId, serviceId: input.serviceId, active: true } }),
+    tx.serviceVehicle.findMany({ where: { organizationId, serviceId: input.serviceId, active: true }, select: { vehicle: { select: { id: true, organizationId: true, name: true, active: true, capacity: true } } } }),
+    tx.driver.findMany({ where: { organizationId }, select: { id: true, organizationId: true, name: true, status: true, languages: true } }),
+    tx.driverAvailability.findMany({ where: { organizationId, active: true, startsAt: { lt: until }, endsAt: { gt: from } } }),
+    tx.resourceBlock.findMany({ where: { organizationId, active: true, startsAt: { lt: until }, endsAt: { gt: from } } }),
+    tx.bookingOccupancy.findMany({ where: { organizationId, releasedAt: null, startsAt: { lt: until }, endsAt: { gt: from } } }),
+  ]);
+  return evaluateAvailability({ organizationId, timeZone: organization.timeZone, operatorStatus: organization.operator?.status ?? "LEAD", service, schedules, vehicles: links.map((link) => link.vehicle), drivers, windows, blocks: [...blocks, ...occupations.map((row) => ({ ...row, active: true }))] }, input, now);
 }

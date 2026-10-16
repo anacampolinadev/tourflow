@@ -1,7 +1,7 @@
 import { z } from "zod";
 import type { OperatorStatus } from "./status";
 export class CatalogConflict extends Error {
-  constructor() { super("Os dados mudaram, não existem neste operador ou há um identificador duplicado. Atualize a página."); this.name = "CatalogConflict"; }
+  constructor(message = "Os dados mudaram, não existem neste operador ou há um identificador duplicado. Atualize a página.") { super(message); this.name = "CatalogConflict"; }
 }
 export class CatalogUnavailable extends Error {
   constructor() { super("O cadastro está bloqueado no estado atual do operador."); this.name = "CatalogUnavailable"; }

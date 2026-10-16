@@ -113,6 +113,8 @@ model Organization {
   serviceVehicles ServiceVehicle[]
   driverAvailability DriverAvailability[]
   resourceBlocks ResourceBlock[]
+  bookings Booking[]
+  customers Customer[]
 }
 
 model OrganizationMember {
@@ -257,6 +259,7 @@ model Service {
   meetingPoint String
   pickupAvailable Boolean @default(false)
   pickupRules String @default("")
+  bookings Booking[]
   schedules ServiceSchedule[]
   compatibleVehicles ServiceVehicle[]
   languages String[]
@@ -277,6 +280,7 @@ model Vehicle {
   capacity Int
   features String[]
   compatibleServices ServiceVehicle[]
+  occupations BookingOccupancy[]
   blocks ResourceBlock[]
   active Boolean @default(false)
   version Int @default(0)
@@ -296,6 +300,7 @@ model Driver {
   languages String[]
   status DriverStatus @default(PENDING)
   availability DriverAvailability[]
+  occupations BookingOccupancy[]
   blocks ResourceBlock[]
   version Int @default(0)
   createdAt DateTime @default(now())
@@ -361,4 +366,81 @@ model ResourceBlock {
   vehicle Vehicle? @relation(fields: [vehicleId, organizationId], references: [id, organizationId], onDelete: Restrict)
   driver Driver? @relation(fields: [driverId, organizationId], references: [id, organizationId], onDelete: Restrict)
   @@index([organizationId, startsAt, endsAt])
+}
+
+enum BookingStatus {
+  CONFIRMED
+  CANCELLED
+}
+model Customer {
+  id String @id @default(cuid())
+  organizationId String
+  name String
+  email String
+  phone String
+  createdAt DateTime @default(now())
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  bookings Booking[]
+  @@unique([id, organizationId])
+  @@index([organizationId, createdAt])
+}
+model Booking {
+  id String @id @default(cuid())
+  organizationId String
+  serviceId String
+  customerId String
+  idempotencyKey String
+  requestHash String
+  mode String @default("SANDBOX")
+  status BookingStatus @default(CONFIRMED)
+  version Int @default(0)
+  passengers Int
+  language String?
+  startsAt DateTime @db.Timestamptz(3)
+  endsAt DateTime @db.Timestamptz(3)
+  timeZone String
+  serviceName String
+  pricingType PricingType
+  unitPriceCents Int
+  totalPriceCents Int
+  currency String
+  meetingPoint String
+  pickupRules String
+  pickup String
+  notes String
+  source String
+  createdAt DateTime @default(now())
+  cancelledAt DateTime?
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  service Service @relation(fields: [serviceId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  customer Customer @relation(fields: [customerId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  occupancy BookingOccupancy?
+  events BookingEvent[]
+  @@unique([id, organizationId])
+  @@unique([organizationId, idempotencyKey])
+  @@index([organizationId, startsAt, id])
+}
+model BookingOccupancy {
+  id String @id @default(cuid())
+  organizationId String
+  bookingId String @unique
+  vehicleId String
+  driverId String
+  startsAt DateTime @db.Timestamptz(3)
+  endsAt DateTime @db.Timestamptz(3)
+  releasedAt DateTime?
+  @@unique([bookingId, organizationId])
+  booking Booking @relation(fields: [bookingId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  vehicle Vehicle @relation(fields: [vehicleId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  driver Driver @relation(fields: [driverId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  @@index([organizationId, startsAt, endsAt])
+}
+model BookingEvent {
+  id String @id @default(cuid())
+  organizationId String
+  bookingId String
+  type BookingStatus
+  createdAt DateTime @default(now())
+  booking Booking @relation(fields: [bookingId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  @@index([organizationId, bookingId, createdAt])
 }
