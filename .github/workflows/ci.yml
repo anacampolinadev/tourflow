@@ -5,6 +5,23 @@ permissions:
 jobs:
   foundation:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: tourflow_test
+          POSTGRES_USER: tourflow
+          POSTGRES_PASSWORD: tourflow
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U tourflow"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql://tourflow:tourflow@localhost:5432/tourflow_test
+      NEXT_TELEMETRY_DISABLED: 1
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -12,6 +29,7 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
+      - run: npm run db:generate
+      - run: npm run db:migrate
       - run: npm run check
-        env:
-          NEXT_TELEMETRY_DISABLED: 1
+      - run: npm run test:integration

@@ -1,0 +1,146 @@
+generator client {
+  provider = "prisma-client"
+  output = "../src/generated/prisma"
+  importFileExtension = "ts"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum PlatformRole {
+  USER
+  SUPER_ADMIN
+}
+
+enum MemberRole {
+  OPERATOR_OWNER
+  OPERATOR_DISPATCHER
+  OPERATOR_VIEWER
+  DRIVER
+}
+
+enum OperatorStatus {
+  LEAD
+  CONTRACTED
+  ONBOARDING
+  DOCS_PENDING
+  UNDER_REVIEW
+  APPROVED
+  GENERATING
+  ASSISTANT_TRAINING
+  SANDBOX
+  CLIENT_REVIEW
+  LIVE
+  RESTRICTED
+  SUSPENDED
+}
+
+model User {
+  id String @id @default(cuid())
+  name String?
+  email String @unique
+  emailVerified DateTime?
+  image String?
+  active Boolean @default(true)
+  platformRole PlatformRole @default(USER)
+  createdAt DateTime @default(now())
+  accounts Account[]
+  sessions Session[]
+  memberships OrganizationMember[]
+  auditLogs AuditLog[]
+}
+
+model Account {
+  id String @id @default(cuid())
+  userId String
+  type String
+  provider String
+  providerAccountId String
+  refresh_token String? @db.Text
+  access_token String? @db.Text
+  expires_at Int?
+  token_type String?
+  scope String?
+  id_token String? @db.Text
+  session_state String?
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id String @id @default(cuid())
+  sessionToken String @unique
+  userId String
+  expires DateTime
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token String @unique
+  expires DateTime
+  @@unique([identifier, token])
+  @@index([expires])
+}
+
+model LoginThrottle {
+  key String @id
+  attempts Int @default(1)
+  windowStart DateTime @default(now())
+}
+
+model Organization {
+  id String @id @default(cuid())
+  name String
+  slug String @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  members OrganizationMember[]
+  operator OperatorProfile?
+  auditLogs AuditLog[]
+}
+
+model OrganizationMember {
+  id String @id @default(cuid())
+  organizationId String
+  userId String
+  role MemberRole
+  active Boolean @default(true)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  user User @relation(fields: [userId], references: [id], onDelete: Restrict)
+  @@unique([organizationId, userId])
+  @@index([userId, active])
+}
+
+model OperatorProfile {
+  id String @id @default(cuid())
+  organizationId String @unique
+  responsibleName String
+  contactEmail String
+  contactPhone String
+  plan String
+  setupPaid Boolean @default(false)
+  monthlyPriceCents Int
+  currency String @default("EUR")
+  primaryLanguage String @default("pt")
+  status OperatorStatus @default(LEAD)
+  version Int @default(0)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  @@index([status])
+}
+
+model AuditLog {
+  id String @id @default(cuid())
+  organizationId String?
+  actorId String
+  action String
+  // Only operational metadata, never tokens, SMTP credentials or document content.
+  metadata Json
+  createdAt DateTime @default(now())
+  organization Organization? @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  actor User @relation(fields: [actorId], references: [id], onDelete: Restrict)
+  @@index([organizationId, createdAt])
+}

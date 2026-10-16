@@ -1,4 +1,6 @@
 # Arquitetura
+## Estado do trabalho
+Sprint 00 validado. Os Sprints 01/02 têm rascunho local de schema Prisma 7, autenticação Auth.js por e-mail e Admin. A instalação e a validação completa estão bloqueadas pelo ambiente. As seções abaixo descrevem a base validada e as decisões; consulte [SPRINT_01_02.md](SPRINT_01_02.md) para os arquivos novos e pendências. Não considerar as funcionalidades prontas para produção.
 ## Decisão: monólito modular
 Um repositório, uma aplicação Next.js com App Router e um deploy. PostgreSQL será a fonte de verdade; Prisma será adotado no sprint de persistência. Sem microserviços, Kubernetes ou Redis nesta fase.
 
