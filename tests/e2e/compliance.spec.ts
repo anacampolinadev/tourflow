@@ -119,5 +119,3 @@ test("private uploads, correction, version history and explicit human approval",
   await admin.screenshot({ path: "test-results/compliance-approved.png", fullPage: true });
   await ownerContext.close();
 });
-
-

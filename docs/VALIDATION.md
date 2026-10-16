@@ -23,4 +23,3 @@ ESLint 9.39.5 foi mantido porque plugins React/import/accessibility da configura
 
 ## Limites
 Sem deploy de produção ou serviços de produção configurados; PostgreSQL e Mailpit descartáveis usados apenas na CI. O compilador Next exige execução fora do sandbox de arquivos desta sessão no Windows para resolver o caminho do projeto; isso não exigiu alteração na aplicação.
-

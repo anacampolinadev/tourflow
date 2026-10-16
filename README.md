@@ -43,4 +43,3 @@ Ler [regras](docs/CODEX_RULES.md), [produto](docs/PRODUCT.md), [arquitetura](doc
 
 ## Documentação do operador
 No Admin, crie o operador e avance até Em configuração. Abra Rever documentação, defina os requisitos e indique se exigem validade. O responsável entra pelo próprio e-mail, abre Documentação do operador e envia os ficheiros. Após o envio para análise, o Admin revê cada versão atual e dá a aprovação final separadamente; rejeições pedem substituição. PDF/PNG/JPEG até 2 MiB, arquivo de 25 MiB/50 versões, 12 requisitos por operador. Os documentos ficam no PostgreSQL privado e são descarregados apenas com autorização. Não há antivírus integrado. Aprovação não publica o operador nem gera ambiente.
-
