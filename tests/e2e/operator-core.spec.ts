@@ -8,7 +8,7 @@ const suffix = randomUUID().replaceAll("-", "");
 const ownerEmail = `core-web-${suffix}@example.test`;
 const outsiderEmail = `core-outsider-${suffix}@example.test`;
 const emails = [ownerEmail, outsiderEmail];
-let organizationId = "", serviceId = "", vehicleId = "", ownerId = "";
+let organizationId = "", ownerId = "";
 const orgIds: string[] = [];
 async function login(page: Page, email: string) {
   const response = await page.request.get("http://localhost:8025/api/v1/search", { params: { query: `to:${email}` } });
@@ -80,12 +80,14 @@ test("owner creates and edits services, vehicles and drivers without publishing"
   await page.getByLabel("Cadastro ativo", { exact: true }).check();
   await page.getByRole("button", { name: "Guardar cadastro", exact: true }).click();
   await saved(page);
-  const service = await db.service.findFirstOrThrow({ where: { organizationId, name: "Passeio de Sintra" } }); serviceId = service.id;
+  const service = await db.service.findFirstOrThrow({ where: { organizationId, name: "Passeio de Sintra" } });
+  const serviceId = service.id;
   expect(service).toMatchObject({ basePriceCents: 4990, durationMinutes: 180, languages: ["pt", "en"], pickupAvailable: true });
   await page.getByLabel("Preço base em EUR").fill("59.95");
   await page.getByLabel("Cadastro ativo", { exact: true }).uncheck();
   await page.getByRole("button", { name: "Guardar cadastro", exact: true }).click();
   await expect.poll(async () => (await db.service.findUniqueOrThrow({ where: { id: serviceId } })).basePriceCents).toBe(5995);
+  await expect(page.getByRole("button", { name: "Guardar cadastro", exact: true })).toBeEnabled();
   await page.getByRole("link", { name: "Voltar à lista" }).click();
   await page.getByLabel("Estado do cadastro").selectOption("active");
   await page.getByRole("button", { name: "Filtrar" }).click();
@@ -102,11 +104,13 @@ test("owner creates and edits services, vehicles and drivers without publishing"
   await page.getByLabel("Cadastro ativo", { exact: true }).check();
   await page.getByRole("button", { name: "Guardar cadastro", exact: true }).click();
   await saved(page);
-  const vehicle = await db.vehicle.findFirstOrThrow({ where: { organizationId } }); vehicleId = vehicle.id;
+  const vehicle = await db.vehicle.findFirstOrThrow({ where: { organizationId, registration: "AA00BB" } });
+  const vehicleId = vehicle.id;
   expect(vehicle.registration).toBe("AA00BB");
   await page.getByLabel("Nome do veículo", { exact: true }).fill("Jipe Serra Atualizado");
   await page.getByRole("button", { name: "Guardar cadastro", exact: true }).click();
   await expect.poll(async () => (await db.vehicle.findUniqueOrThrow({ where: { id: vehicleId } })).version).toBe(1);
+  await expect(page.getByRole("button", { name: "Guardar cadastro", exact: true })).toBeEnabled();
 
   await newRecord(page, "drivers", "motorista");
   await page.getByLabel("Nome do motorista", { exact: true }).fill("João Motorista");
@@ -120,6 +124,8 @@ test("owner creates and edits services, vehicles and drivers without publishing"
   expect(await db.user.findUnique({ where: { email } })).toBeNull();
   await page.getByLabel("Telefone", { exact: true }).fill("+351 987654321");
   await page.getByRole("button", { name: "Guardar cadastro", exact: true }).click();
+  await expect.poll(async () => (await db.driver.findFirstOrThrow({ where: { organizationId, email } })).version).toBe(1);
+  await expect(page.getByRole("button", { name: "Guardar cadastro", exact: true })).toBeEnabled();
   await expect(page.getByLabel("Telefone", { exact: true })).toHaveValue("+351 987654321");
   for (const [value, label] of [["ACTIVE", "Ativo"], ["SUSPENDED", "Suspenso"], ["PENDING", "Pendente"], ["ACTIVE", "Ativo"]]) {
     await page.getByLabel("Próximo estado").selectOption(value!);
@@ -137,11 +143,15 @@ test("owner creates and edits services, vehicles and drivers without publishing"
 });
 
 test("viewer and dispatcher UI follow current server roles and cross-tenant routes stay private", async ({ page, browser }) => {
+  // This scenario can run alone; it does not depend on the preceding browser test.
+  const service = await db.service.create({ data: { organizationId, name: "Serviço de leitura", description: "", durationMinutes: 120, pricingType: "PER_GROUP", basePriceCents: 30000, capacity: 6, meetingPoint: "Estação de Sintra", languages: ["pt"] } });
+  const vehicle = await db.vehicle.create({ data: { organizationId, name: "Veículo de leitura", type: "VAN", registration: "XX11YY", capacity: 8, features: [] } });
+  const serviceId = service.id, vehicleId = vehicle.id;
   await login(page, ownerEmail);
   await db.organizationMember.updateMany({ where: { organizationId, userId: ownerId }, data: { role: "OPERATOR_VIEWER" } });
   await page.goto(`/operator/${organizationId}/services`);
   await expect(page.getByRole("link", { name: "Adicionar serviço", exact: true })).toHaveCount(0);
-  await page.getByRole("link", { name: "Passeio de Sintra", exact: true }).click();
+  await page.getByRole("link", { name: "Serviço de leitura", exact: true }).click();
   await expect(page.getByLabel("Preço base em EUR")).toBeDisabled();
   await expect(page.getByRole("button", { name: "Guardar cadastro", exact: true })).toHaveCount(0);
   expect((await page.goto(`/operator/${organizationId}/services/new`))?.status()).toBe(404);
