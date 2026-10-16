@@ -84,7 +84,9 @@ describe("auth, tenant isolation and admin persistence", () => {
   it("rolls back duplicate creation including its audit entry", async () => {
     session.userId = adminId;
     const count = await getDb().auditLog.count({ where: { action: "operator.created", actorId: adminId } });
-    await expect(createOperator(input)).rejects.toBeInstanceOf(OperatorConflict);
+    const email = `rollback-${suffix}@example.test`;
+    await expect(createOperator({ ...input, contactEmail: email })).rejects.toBeInstanceOf(OperatorConflict);
+    expect(await getDb().user.findUnique({ where: { email } })).toBeNull();
     expect(await getDb().auditLog.count({ where: { action: "operator.created", actorId: adminId } })).toBe(count);
   });
 

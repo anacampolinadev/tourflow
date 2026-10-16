@@ -15,7 +15,7 @@ A IA consulta ferramentas; o backend decide disponibilidade e confirma reservas.
 Somente fundação: Next.js/TypeScript, módulos vazios documentados, contexto persistente, lint, tipos, testes básicos, CI e página inicial neutra. Não há autenticação, RBAC, banco, CRUD, reservas, dispatch, documentos enviados ou integrações.
 
 ## Trabalho em curso: Sprints 01 e 02
-Autorizados pelo utilizador após a entrega inicial. Rascunho local de autenticação/multi-tenancy e Admin preparado, mas ainda não concluído: faltam instalar dependências, atualizar lockfile e validar persistência/build. Ver [estado e sequência de retomada](SPRINT_01_02.md). O Sprint 03 (Compliance) permanece fora do escopo.
+Autorizados pelo utilizador após a entrega inicial. Autenticação/multi-tenancy e Admin implementados; instalação pelo lockfile, lint, tipos, unitários e build validados. Persistência e fluxo real são verificados pela CI. Ver [estado e verificações](SPRINT_01_02.md). O Sprint 03 (Compliance) permanece fora do escopo.
 
 ## Sequência aprovada
 00 Foundation; 01 Auth/Multi-tenant; 02 Admin; 03 Compliance; 04 Operator Core; 05 Availability; 06 Booking; 07 Dispatch; 08 Operator UI; 09 Driver PWA; 10 White Label; 11 Alana Core; 12 Alana Tools; 13 Sandbox/QA; 14 Managed Ops; 15 Pilot.
