@@ -75,6 +75,7 @@ test("real email login, operator creation, edit, status, logout and cross-tenant
   const link = await login(page, adminEmail);
   await page.getByRole("link", { name: "Administrar operadores" }).click();
   await page.getByRole("link", { name: "Novo operador" }).click();
+  await expect(page.getByRole("heading", { name: "Novo operador", exact: true })).toBeVisible();
   await page.getByLabel("Nome do operador", { exact: true }).fill(`Sintra E2E ${suffix}`);
   await page.getByLabel("Endereço do operador").fill(`sintra-${suffix}`);
   await page.getByLabel("Responsável", { exact: true }).fill("João Teste");
@@ -90,7 +91,7 @@ test("real email login, operator creation, edit, status, logout and cross-tenant
   await expect(page.getByRole("heading", { name: `Sintra Atualizada ${suffix}`, exact: true })).toBeVisible();
   await page.getByLabel("Próximo estado").selectOption("CONTRACTED");
   await page.getByRole("button", { name: "Alterar estado" }).click();
-  await expect(page.getByText("Contratado", { exact: true })).toBeVisible();
+  await expect(page.locator("main strong")).toHaveText("Contratado");
   expect((await db.operatorProfile.findUniqueOrThrow({ where: { organizationId: org.id } })).status).toBe("CONTRACTED");
   expect(await db.auditLog.count({ where: { organizationId: org.id, action: "operator.status.changed" } })).toBe(1);
   await page.screenshot({ path: "test-results/operator-admin.png", fullPage: true });
