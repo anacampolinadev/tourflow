@@ -11,8 +11,11 @@ Três gates humanos: admin aprova documentos; cliente valida preços, políticas
 Sem marketplace, distribuição entre empresas, tours próprios, split de pagamentos, comissões ou motoristas independentes ao público. Stripe, faturação automatizada e Network ficam para depois.
 A IA consulta ferramentas; o backend decide disponibilidade e confirma reservas.
 
-## Entrega atual: Sprint 00
+## Entrega validada: Sprint 00
 Somente fundação: Next.js/TypeScript, módulos vazios documentados, contexto persistente, lint, tipos, testes básicos, CI e página inicial neutra. Não há autenticação, RBAC, banco, CRUD, reservas, dispatch, documentos enviados ou integrações.
+
+## Sprints 01 e 02 — implementados e validados em PR
+Autorizados pelo utilizador após a entrega inicial. Autenticação/multi-tenancy e Admin implementados; instalação pelo lockfile, lint, tipos, unitários e build validados. Persistência PostgreSQL, concorrência, isolamento e fluxo real de login/Admin passaram na CI. Ver [estado e verificações](SPRINT_01_02.md). O Sprint 03 (Compliance) permanece fora do escopo. Não houve deploy de produção.
 
 ## Sequência aprovada
 00 Foundation; 01 Auth/Multi-tenant; 02 Admin; 03 Compliance; 04 Operator Core; 05 Availability; 06 Booking; 07 Dispatch; 08 Operator UI; 09 Driver PWA; 10 White Label; 11 Alana Core; 12 Alana Tools; 13 Sandbox/QA; 14 Managed Ops; 15 Pilot.

@@ -23,7 +23,7 @@ describe("repository foundation", () => {
     expect(read("AGENTS.md")).toContain("docs/CODEX_RULES.md");
   });
 
-  it("reserves the agreed module boundaries without business implementation", () => {
+  it("keeps the agreed module boundaries available", () => {
     for (const name of ["auth", "tenants", "compliance", "services", "vehicles", "drivers", "availability", "bookings", "dispatch", "assistants", "audit"]) {
       expect(existsSync(resolve(root, `src/modules/${name}/README.md`))).toBe(true);
     }

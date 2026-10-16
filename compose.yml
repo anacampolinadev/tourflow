@@ -1,0 +1,26 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: tourflow
+      POSTGRES_USER: tourflow
+      POSTGRES_PASSWORD: tourflow
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - tourflow_postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tourflow"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+  mailpit:
+    image: axllent/mailpit:v1.27
+    environment:
+      MP_SMTP_AUTH_ACCEPT_ANY: "true"
+      MP_SMTP_AUTH_ALLOW_INSECURE: "true"
+    ports:
+      - "127.0.0.1:1025:1025"
+      - "127.0.0.1:8025:8025"
+volumes:
+  tourflow_postgres:

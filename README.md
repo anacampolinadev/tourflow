@@ -1,43 +1,41 @@
 # TourFlow
-Fundação do TourFlow Fleet, plataforma B2B para operações de turismo.
+Plataforma B2B de operações para turismo, em monólito modular Next.js/TypeScript.
 
 ## Estado
-Sprint 00: Next.js App Router + TypeScript strict, monólito modular, documentação persistente, ESLint, Vitest e CI. A página inicial apenas identifica o projeto.
-Nenhuma funcionalidade de negócio, autenticação, banco de dados ou integração foi implementada.
+Sprints 01 (Auth/Multi-tenant) e 02 (Admin): autenticação por e-mail, isolamento por organização, papéis e gestão administrativa de operadores. Schema Prisma/PostgreSQL, migração, auditoria e testes incluídos. CI aprovada com 33 testes unitários, 7 de integração e 3 de navegador; ver [evidências e limites](docs/SPRINT_01_02.md).
+Compliance, white-label, reservas, dispatch e publicação ficam para os próximos sprints. Sem deploy nesta entrega.
 
 ## Executar localmente
-Pré-requisitos: Node.js 24 LTS e npm (Node 26 também é aceito).
+Node 24 LTS (26 aceito), npm e Docker Desktop em execução.
 ```sh
 npm ci
+cp .env.example .env
+docker compose up -d
+npm run db:generate
+npm run db:migrate
+npm run db:bootstrap -- email-real-do-admin
 npm run dev
 ```
-Abrir http://localhost:3000. Não são necessárias variáveis de ambiente ou PostgreSQL. .env.example registra esse estado; não colocar segredos no Git.
+No PowerShell, usar Copy-Item para copiar o exemplo. Preencher AUTH_SECRET com um segredo gerado conforme .env.example antes de iniciar. Credenciais do exemplo são apenas locais. O bootstrap é de uso único e não envia e-mail.
+Abrir http://localhost:3000/login. Links locais aparecem no Mailpit em http://localhost:8025; nenhum destinatário externo é contactado. Contas operadoras são cadastradas pelo Admin, sem registo público.
+Produção exige PostgreSQL e SMTP reais, HTTPS, limites de abuso e segredos próprios.
 
 ## Verificar
 ```sh
-npm run lint
-npm run typecheck
-npm test
-npm run build
+npm run check
 ```
-Ou `npm run check` para executar tudo. O typecheck gera os tipos de rotas antes de executar TypeScript, inclusive em checkout limpo.
-`npm run test:watch` ativa modo interativo. Os testes atuais verificam contratos estruturais; não comprovam isolamento de tenants ou funcionalidades futuras.
-Para servir a versão de produção após o build: `npm start`.
-CI executa as mesmas verificações em pushes e pull requests.
+Executa lint, geração de tipos, TypeScript, unitários e build. Para servir o build: npm start. Para testes interativos: npm run test:watch.
 
-## Estrutura e contexto
-```text
-src/app/          Páginas e layouts
-src/modules/      11 módulos reservados, sem implementação
-src/components/   UI compartilhada futura
-src/lib/          Infraestrutura transversal futura
-src/types/        Tipos compartilhados futuros
-prisma/           Persistência futura
-tests/            Testes da fundação
-docs/             Decisões e escopo persistentes
-```
-Ler [regras](docs/CODEX_RULES.md), [produto](docs/PRODUCT.md), [arquitetura](docs/ARCHITECTURE.md) e [modelo conceitual](docs/DATA_MODEL.md).
-PostgreSQL, Prisma, Auth.js, Tailwind/shadcn, Zod e Playwright serão adotados nos sprints correspondentes. Não há deploy ou conexão com Vercel nesta entrega.
+Integração: configurar DATABASE_URL de banco dedicado com nome terminado em _test, executar npm run db:migrate e npm run test:integration. Navegador: instalar Chromium com npx playwright install chromium, manter Mailpit local disponível e executar npm run test:e2e. Playwright inicia um servidor de teste na porta 3100. Os testes recusam outro nome de banco e limpam apenas suas fixtures. CI prepara PostgreSQL/Mailpit descartáveis e executa a mesma sequência.
 
-## Próxima etapa
-Sprint 01 — Auth/Multi-tenant, em tarefa própria após revisão desta fundação.
+## Estrutura
+- src/app: páginas, layouts e API de autenticação.
+- src/modules: auth e tenants; nove fronteiras futuras.
+- src/components: formulários reutilizáveis.
+- src/lib: configuração validada e conexão ao banco.
+- src/generated: cliente Prisma gerado, fora do Git.
+- prisma: schema e migrations; scripts: bootstrap administrativo.
+- tests: unitários, integração e navegador; docs: contexto persistente.
+
+## Contexto para a próxima tarefa
+Ler [regras](docs/CODEX_RULES.md), [produto](docs/PRODUCT.md), [arquitetura](docs/ARCHITECTURE.md), [modelo de dados](docs/DATA_MODEL.md) e [estado dos sprints](docs/SPRINT_01_02.md).
