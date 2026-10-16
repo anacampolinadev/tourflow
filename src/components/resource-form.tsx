@@ -1,0 +1,22 @@
+"use client";
+import { useActionState, useId } from "react";
+import { supportedLanguages, languageLabels } from "@/types/languages";
+import type { ResourceField, ResourceFormState } from "@/types/operator-core";
+export function ResourceForm({ fields, action, readOnly = false, label = "Guardar cadastro" }: { fields: ResourceField[]; action: (state: ResourceFormState, form: FormData) => Promise<ResourceFormState>; readOnly?: boolean; label?: string }) {
+  const [state, submit, pending] = useActionState(action, { error: null });
+  const formId = useId();
+  return <form action={submit}>
+    {state.error ? <p role="alert">{state.error}</p> : null}
+    {readOnly ? <p>Modo de leitura. Não pode alterar este cadastro.</p> : null}
+    <fieldset disabled={pending || readOnly} className="resource-fields"><legend className="sr-only">Dados do cadastro</legend>
+      {fields.map((field) => {
+        const id = `${formId}-${field.name}`;
+        if (field.type === "checkbox") return <label key={field.name} className="checkbox"><input id={id} name={field.name} type="checkbox" defaultChecked={field.value} />{field.label}</label>;
+        if (field.type === "languages") return <fieldset key={field.name} className="language-fields"><legend>{field.label}</legend>{supportedLanguages.map((language) => <label key={language} className="checkbox"><input name={field.name} type="checkbox" value={language} defaultChecked={field.value.includes(language)} />{languageLabels[language]}</label>)}</fieldset>;
+        if (field.type === "select") return <div key={field.name}><label htmlFor={id}>{field.label}</label><select id={id} name={field.name} defaultValue={field.value}>{field.options.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></div>;
+        return <div key={field.name}><label htmlFor={id}>{field.label}</label>{field.type === "textarea" ? <textarea id={id} name={field.name} defaultValue={field.value} required={field.required} maxLength={field.maxLength} /> : <input id={id} name={field.name} type={field.type} defaultValue={field.value} required={field.required} min={field.min} max={field.max} maxLength={field.maxLength} step={field.step} />}</div>;
+      })}
+    </fieldset>
+    {!readOnly ? <button disabled={pending} type="submit">{pending ? "A guardar…" : label}</button> : null}
+  </form>;
+}

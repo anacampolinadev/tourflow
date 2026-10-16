@@ -105,6 +105,9 @@ model Organization {
   operator OperatorProfile?
   auditLogs AuditLog[]
   complianceRequirements ComplianceRequirement[]
+  services Service[]
+  vehicles Vehicle[]
+  drivers Driver[]
 }
 
 model OrganizationMember {
@@ -214,4 +217,79 @@ model AuditLog {
   organization Organization? @relation(fields: [organizationId], references: [id], onDelete: Restrict)
   actor User @relation(fields: [actorId], references: [id], onDelete: Restrict)
   @@index([organizationId, createdAt])
+}
+
+// Operator Core: registries only. Scheduling and eligibility belong to later sprints.
+enum PricingType {
+  PER_PERSON
+  PER_GROUP
+}
+enum VehicleType {
+  JEEP
+  CAR
+  VAN
+  MINIBUS
+  BUS
+}
+enum DriverStatus {
+  INVITED
+  PENDING
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+}
+model Service {
+  id String @id @default(cuid())
+  organizationId String
+  name String
+  description String
+  durationMinutes Int
+  pricingType PricingType
+  basePriceCents Int
+  currency String @default("EUR")
+  capacity Int
+  meetingPoint String
+  pickupAvailable Boolean @default(false)
+  pickupRules String @default("")
+  languages String[]
+  active Boolean @default(false)
+  version Int @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  @@unique([id, organizationId])
+  @@index([organizationId, active, name])
+}
+model Vehicle {
+  id String @id @default(cuid())
+  organizationId String
+  name String
+  type VehicleType
+  registration String
+  capacity Int
+  features String[]
+  active Boolean @default(false)
+  version Int @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  @@unique([organizationId, registration])
+  @@unique([id, organizationId])
+  @@index([organizationId, active, name])
+}
+model Driver {
+  id String @id @default(cuid())
+  organizationId String
+  name String
+  phone String
+  email String
+  languages String[]
+  status DriverStatus @default(PENDING)
+  version Int @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  @@unique([organizationId, email])
+  @@unique([id, organizationId])
+  @@index([organizationId, status, name])
 }

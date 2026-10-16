@@ -20,3 +20,5 @@ Implement: escopo fechado.
 Do not: exclusões.
 Acceptance criteria: comportamento verificável.
 Before finishing: verificações acima e relatório conciso.
+
+Operator Core exige também testes de preço em cêntimos, recolha, idiomas, normalização/duplicidade, transições de motorista e bloqueio de escrita por estado do operador. Conta de motorista não deve ser criada implicitamente por cadastro de contacto. Preservar ordem de bloqueio raiz do operador → recurso quando novos casos de uso partilharem esses dados.
