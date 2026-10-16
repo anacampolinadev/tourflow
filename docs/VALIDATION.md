@@ -1,5 +1,8 @@
 # Validação
 
+## Sprint 03
+Aprovado na [CI 38974150021](https://github.com/anacampolinadev/tourflow/actions/runs/38974150021), implementação 9e8b157: npm ci, geração Prisma, migrações incrementais, comparação banco/schema, lint, typecheck, build, 40 unitários, 19 de integração PostgreSQL e 4 testes completos Chromium. Inclui os sprints anteriores. Acesso privado, histórico, rejeição/substituição, validade, quotas, concorrência e aprovação humana validados. Sem novas dependências ou alterações de componentes do Windows. Ver [contratos e limites](SPRINT_03.md).
+
 ## Sprints 01 e 02
 Código validado na [CI 38970643586](https://github.com/anacampolinadev/tourflow/actions/runs/38970643586), implementação 1319434: instalação limpa, lint, tipos, build, migração aplicada, comparação banco/schema sem diferenças, 33 testes unitários, 7 testes de integração PostgreSQL e 3 testes completos em Chromium. O navegador usa login real por e-mail no Mailpit, sem bypass de autenticação, e verifica nomes longos sem overflow da página. Docker local não iniciou por ausência do WSL; não foram instalados componentes do Windows. Não há deploy de produção.
 
@@ -19,4 +22,5 @@ O audit completo identificou 5 alertas high derivados de `braces` por `micromatc
 ESLint 9.39.5 foi mantido porque plugins React/import/accessibility da configuração Next atual ainda não declaram compatibilidade com ESLint 10. Isso gera aviso de fim de suporte do ESLint 9 na instalação; migrar quando a cadeia suportar a versão 10. Não há overrides ou legacy-peer-deps.
 
 ## Limites
-Sem deploy, serviços externos ou base de dados. O compilador Next exige execução fora do sandbox de arquivos desta sessão no Windows para resolver o caminho do projeto; isso não exigiu alteração na aplicação.
+Sem deploy de produção ou serviços de produção configurados; PostgreSQL e Mailpit descartáveis usados apenas na CI. O compilador Next exige execução fora do sandbox de arquivos desta sessão no Windows para resolver o caminho do projeto; isso não exigiu alteração na aplicação.
+

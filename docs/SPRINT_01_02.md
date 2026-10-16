@@ -1,7 +1,7 @@
 # Sprints 01 e 02 — autenticação, multi-tenancy e Admin
 
 ## Escopo autorizado
-Sprints 01 (Auth/Multi-tenant) e 02 (Admin), com acesso ao GitHub do TourFlow. Sprint 03 (Compliance) fora do escopo. Branch: sprint-01-02-auth-admin.
+Sprints 01 (Auth/Multi-tenant) e 02 (Admin), com acesso ao GitHub do TourFlow. Sprint 03 (Compliance) fora do escopo deste PR; autorizado depois e documentado em SPRINT_03.md. Branch: sprint-01-02-auth-admin.
 
 ## Implementação
 - Prisma 7.10.1/PostgreSQL, migração inicial, cliente gerado fora do Git e bootstrap explícito do primeiro admin, com bloqueio transacional de concorrência.
@@ -41,3 +41,4 @@ Pré-requisitos: Node 24 LTS, npm e Docker Desktop em execução.
 Não houve deploy nem configuração de PostgreSQL/SMTP de produção. Antes de exposição pública, configurar HTTPS, segredos e limites por IP/volume na borda; o limite por e-mail não substitui isso. Não há gestão visual de membros/roles, recuperação de titularidade ou reativação de operadores neste escopo. Suspensão bloqueia o avanço de estado; funcionalidades operacionais futuras precisam verificar os gates próprios. Nunca declarar o MVP completo com base apenas nestes dois sprints.
 
 Referências: https://authjs.dev/getting-started/installation e https://www.prisma.io/docs/orm/v7/prisma-schema/overview/generators.
+

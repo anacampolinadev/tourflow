@@ -21,5 +21,8 @@ Fluxo: ONBOARDING → (Admin define requisito) DOCS_PENDING → (responsável en
 /api/organizations/[organizationId]/documents/[documentId]: anexo autenticado; scope=admin requer SUPER_ADMIN. Negação/ausência responde 404 sem revelar existência.
 
 ## Validação
-Em execução. Unitários verificam gates, validade, uploads e permissões. Integração usa PostgreSQL descartável para transações, concorrência, isolamento, FKs e quotas. Chromium exercita login real por e-mail, envio, rejeição, substituição, downloads privados e aprovação final.
+Aprovado na [CI 38974150021](https://github.com/anacampolinadev/tourflow/actions/runs/38974150021), implementação 9e8b157: instalação limpa, migrações aplicadas, comparação banco/schema sem diferenças, lint, tipos, build, 40 testes unitários, 19 de integração PostgreSQL e 4 de navegador Chromium. Os 63 testes incluem os sprints anteriores. O fluxo real por e-mail cobre envio, rejeição, substituição, histórico, clique de download privado, tentativas de acesso indevido e aprovação humana final. Captura: artefacto browser-test-results/compliance-approved.png da execução.
 Docker local permanece indisponível por ausência de WSL. Nenhum componente do Windows foi instalado; integração e navegador executam na CI com PostgreSQL e Mailpit descartáveis. Sem deploy de produção.
+
+
+A CI executa em pull requests e pushes para main, com cancelamento de versões antigas por evento/branch e limite de 20 minutos. Isso evita a duplicação push/PR; uma execução antiga presa no GitHub foi cancelada durante a validação. O PR #2 está empilhado sobre a branch do PR #1, ainda não integrado. Rever e integrar #1 antes de #2; esta entrega não faz merge ou deploy.
