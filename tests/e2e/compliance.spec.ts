@@ -90,6 +90,9 @@ test("private uploads, correction, version history and explicit human approval",
   await upload(owner, "substituto.pdf");
   await owner.getByText("Histórico de versões (2)", { exact: true }).click();
   await expect(owner.getByRole("link", { name: /Descarregar versão 1/ })).toBeVisible();
+  const attachment = owner.waitForEvent("download");
+  await owner.getByRole("link", { name: /Descarregar versão 2/ }).click();
+  expect((await attachment).suggestedFilename()).toBe("documento.pdf");
   const storedDocument = await db.complianceDocument.findFirstOrThrow({ where: { organizationId }, orderBy: { revision: "desc" } });
   const downloadUrl = `/api/organizations/${organizationId}/documents/${storedDocument.id}`;
   const downloaded = await owner.request.get(downloadUrl);

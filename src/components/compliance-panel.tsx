@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { ComplianceForm } from "./compliance-form";
 import { complianceAction } from "@/app/compliance/actions";
 import { documentLabels, isDocumentValid, type ComplianceScope, type readCompliance } from "@/modules/compliance";
@@ -20,7 +19,7 @@ export function CompliancePanel({ data, scope }: { data: Overview; scope: Compli
       <p>{requirement.document ? documentLabels[isDocumentValid(requirement) ? requirement.document.status : "EXPIRED"] : "Por enviar"}{requirement.requiresExpiry ? " · Validade obrigatória" : ""}</p>
       {requirement.document?.review?.note ? <p>Observação da revisão: {requirement.document.review.note}</p> : null}
       {requirement.history.length ? <details><summary>Histórico de versões ({requirement.history.length})</summary><ul>{requirement.history.map((document) => <li key={document.id}>
-        <Link prefetch={false} href={`/api/organizations/${organization.id}/documents/${document.id}${admin ? "?scope=admin" : ""}`}>Descarregar versão {document.revision}: {document.fileName}</Link>
+        <a download href={`/api/organizations/${organization.id}/documents/${document.id}${admin ? "?scope=admin" : ""}`}>Descarregar versão {document.revision}: {document.fileName}</a>
         {" · "}{documentLabels[document.status]}{document.expiresOn ? ` · Válido até ${document.expiresOn.toISOString().slice(0, 10)}` : ""}
         {document.review?.note ? <p>Observação: {document.review.note}</p> : null}
       </li>)}</ul></details> : null}
