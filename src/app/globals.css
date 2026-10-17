@@ -159,3 +159,5 @@ summary { cursor: pointer; padding: .5rem 0; }
 .operator-shell.brand-themed .dashboard-next a, .operator-shell.brand-themed .dashboard-next .eyebrow { color: var(--brand-on-primary); }
 .brand-themed .brand-preview { background: var(--brand-secondary); color: var(--brand-on-secondary); padding: 1rem; border-radius: .75rem; margin: 1rem 0; }
 .driver-shell .brand-themed .driver-brand { padding: .8rem; background: var(--brand-secondary); color: var(--brand-on-secondary); border-radius: .6rem; }
+
+.assistant-instructions { white-space: pre-wrap; overflow-wrap: anywhere; font-size: .85rem; padding: 1rem; border: 1px solid #cbd5e1; border-radius: .5rem; }

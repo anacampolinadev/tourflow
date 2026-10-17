@@ -44,3 +44,6 @@ Portal móvel privado com vínculo explícito, atribuições próprias, aceite/r
 
 ## Sprint 10 — White-label
 Identidade por configuração: nome de apresentação, cores/logótipo e ícones aplicados ao painel e portal/PWA do motorista. Factory repetível sob gate documental, sem duplicar recursos nem publicar. Configuração privada por organização; domínios, site público, comunicação da assistente e GO LIVE continuam posteriores. Ver [contratos e limites](SPRINT_10.md).
+
+## Sprint 11 — Alana Core
+Configuração privada e versões da assistente por operador: nome, tom, idiomas, horário de atendimento, políticas, FAQs e contactos internos. Playbook central separado e pré-visualização de instruções, sem inferência, ferramentas ou canais externos. Preparação não publica nem altera os gates humanos. Ver [contratos e limites](SPRINT_11.md).
