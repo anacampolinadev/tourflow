@@ -59,3 +59,6 @@ branding é um módulo independente (auth/compliance/tenants por APIs públicas)
 
 ## Alana Core — Sprint 11
 Módulo assistants expõe initializeAssistant/updateAssistant/readAssistant; domínio puro valida dados e compõe instruções, service server-only autoriza owner e persiste snapshots sob lock da raiz e gate documental. Perfil atual, histórico por tenant e auditoria atómicos; RepeatableRead nas consultas. Playbook em código, dados de referência JSON de menor confiança, contactos internos excluídos do prompt. Sem inferência/SDK/adapters ou ferramentas: operação fica para os sprints seguintes. Ver [Sprint 11](SPRINT_11.md).
+
+## Alana Tools — Sprint 12
+assistants/tools.ts compõe contratos públicos de services/availability/bookings na mesma transação sob root lock. tools-domain.ts define whitelist/DTOs/entradas estritas. Sessões vinculam tenant/autor/versão/TTL; escritas com chave/hash e grant de consulta próprio. Booking expõe caso de uso transacional compartilhado e recibo mínimo; não há endpoint de banco ou inferência. Playbook alana-tools-1 exige atualização explícita de versões antigas. Ver [Sprint 12](SPRINT_12.md).
