@@ -64,6 +64,7 @@ test.afterAll(async () => {
 test("automatic recommendation, justified manual reassignment and cancellation preserve history", async ({ page }) => {
   test.setTimeout(120_000);
   const errors: string[] = []; page.on("pageerror", (error) => errors.push(error.message));
+  page.on("console", (message) => { if (message.type() === "error") errors.push(message.text()); });
   await login(page, email); await page.goto(path());
   await expect(page.getByRole("heading", { name: "Distribuição interna", exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Distribuir automaticamente", exact: true }).click();
@@ -79,9 +80,10 @@ test("automatic recommendation, justified manual reassignment and cancellation p
   await expect.poll(version).toBe(2);
   await expect(page.getByText("Atribuição manual", { exact: true })).toBeVisible();
   expect(await db.bookingOccupancy.findUniqueOrThrow({ where: { bookingId } })).toMatchObject({ driverId: manualDriver, vehicleId: manualVehicle, releasedAt: null });
-  await page.goto(path()); await page.screenshot({ path: "test-results/dispatch.png", fullPage: true });
+  // Do not let screenshot caret hiding mutate textarea styles while the new page hydrates.
+  await page.goto(path()); await page.screenshot({ path: "test-results/dispatch.png", fullPage: true, caret: "initial" });
   await page.setViewportSize({ width: 390, height: 844 }); expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
-  await page.screenshot({ path: "test-results/dispatch-mobile.png", fullPage: true });
+  await page.screenshot({ path: "test-results/dispatch-mobile.png", fullPage: true, caret: "initial" });
   await page.goto(`/operator/${org}/bookings`);
   const card = page.getByRole("article", { name: "Reserva de Cliente Distribuição", exact: true });
   await expect(card).toContainText("Atribuída em teste"); await expect(card).toContainText("Maria da Serra");

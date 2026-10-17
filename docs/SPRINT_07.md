@@ -28,7 +28,9 @@ DispatchDecision guarda tenant, reserva, ator, modo, resultado, versão resultan
 Prévia é leitura consistente, sem efeitos; o comando recalcula tudo. UI mostra recursos provisórios/atribuídos, critérios, carga/pontos dos candidatos, escolha automática/manual e últimas 20 decisões. História completa permanece no banco. Formulários manuais preservam dados quando há erro. Sem dependência externa ou variável nova.
 
 ## Verificação
-Local: lint, tipos, 77 unitários e build aprovados. Novos testes PostgreSQL e Chromium cobrem carga/capacidade, filtros e manual, tenant/RBAC, replay, concorrência, cancelamento, falha injetada na decisão e rollback. Fluxo real de login SMTP/Mailpit → automática → manual → histórico → cancelamento; viewer e outro utilizador. Evidência final de CI será adicionada após conclusão.
+Local: lint, tipos, 77 unitários e build aprovados. Novos testes PostgreSQL e Chromium cobrem carga/capacidade, filtros e manual, tenant/RBAC, replay, concorrência, cancelamento, falha injetada na decisão e rollback. Fluxo real de login SMTP/Mailpit → automática → manual → histórico → cancelamento; viewer e outro utilizador. CI de implementação [38985970211](https://github.com/anacampolinadev/tourflow/actions/runs/38985970211), commit aca65e4d2e4420880699d8aa44153a792bd2b0de: aprovada, 77 unitários + 68 PostgreSQL + 12 Chromium = 157 testes. Instalação por lockfile, migration, drift, lint, tipos e build aprovados. A captura usa caret=initial para não alterar estilos de textarea durante hidratação; o E2E também verifica erros de console. Resultado da última verificação acompanha o PR e o relatório de entrega.
 
 ## Limites
 Somente simulação interna SANDBOX. Não assegura validade documental individual, proximidade real, avaliação ou taxa de aceitação. Sem notificação, GPS, aceite/recusa, remarcação, replaneamento seletivo, gestão de exceções ou operação pública. Cadastros/calendário continuam conservadoramente bloqueados enquanto existirem ocupações futuras. Não houve merge, deploy ou alteração ao WSL/Windows.
+
+PR [#6](https://github.com/anacampolinadev/tourflow/pull/6), empilhado sobre Sprint 06/PR #5. Sem merge ou deploy.
