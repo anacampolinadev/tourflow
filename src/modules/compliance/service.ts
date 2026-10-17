@@ -109,7 +109,7 @@ export async function reviewDocument(organizationId: string, version: number, do
 export async function requestCorrections(organizationId: string, version: number, rawNote: unknown) {
   const note = correctionInput.parse(rawNote);
   return mutate(organizationId, version, "admin", "compliance.corrections.requested", async (tx, profile) => {
-    requireState(profile, "UNDER_REVIEW", "APPROVED");
+    requireState(profile, "UNDER_REVIEW", "APPROVED", "SANDBOX", "CLIENT_REVIEW");
     await tx.operatorProfile.update({ where: { organizationId }, data: { status: "DOCS_PENDING", complianceNote: note, approvedAt: null, approvedById: null } });
   });
 }

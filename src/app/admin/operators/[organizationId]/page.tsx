@@ -21,6 +21,7 @@ export default async function OperatorDetail({ params, searchParams }: { params:
     <h2>Estado do operador</h2>
     {options.length ? <StatusForm action={saveStatus.bind(null, organizationId, profile.version)} options={options} /> : <p>Não há transições disponíveis nesta etapa.</p>}
     <p><Link href={`/admin/operators/${organizationId}/documents`}>Rever documentação</Link></p>
-    <p>A geração do ambiente e a entrada em produção serão implementadas nas próximas etapas.</p>
+    <p><Link href={`/admin/operators/${organizationId}/qa`}>Rever qualidade do operador</Link></p>
+    <p>Produção depende das validações de qualidade, do cliente e do GO LIVE.</p>
   </main>;
 }

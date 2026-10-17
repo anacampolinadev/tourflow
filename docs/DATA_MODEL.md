@@ -72,3 +72,6 @@ AssistantProfile: organizationId PK/FK RESTRICT, versão atual, datas. Assistant
 
 ## Modelo físico 12
 AssistantConversation vincula organização/versão da assistente, User autor e TTL; AssistantToolCall tem PK conversa/callId, tool/hash e booking opcional; AssistantHandoff tem motivo privado e uma entrada por conversa. FKs compostas preservam tenant, RESTRICT, CHECKs de TTL/tipo/hash/motivo. Fonte de booking acrescenta ASSISTANT_SANDBOX; sem duplicar dados pessoais em tool logs. Não há transcrição, exclusão ou notificação automática. Ver [Sprint 12](SPRINT_12.md).
+
+## Modelo físico 13
+QaRun referencia organização/autor, suiteVersion/hash, checks JSONB e validade. QaManualCheck referencia relatório pelo mesmo tenant e revisor, com cenário/revisão/decisão/nota privada; unicidade de revisão e CHECKs de 34 verificações, TTL, tamanhos e decisões FAIL/BLOCKED. Sem PASS de conversação ou exclusão operacional. Probes não deixam reservas/sessões/clientes/audits persistidos. Ver [Sprint 13](SPRINT_13.md).
