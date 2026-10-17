@@ -107,7 +107,10 @@ test("owner explicitly enables access; driver logs in and completes the mobile j
   expect(await db.driverAction.count({ where: { bookingId } })).toBe(4);
   expect((await db.bookingOccupancy.findUniqueOrThrow({ where: { bookingId } })).releasedAt).toBeNull();
   // Service worker provides only a generic failed-navigation response, never a private cache.
-  await driverPage.evaluate(async () => { await navigator.serviceWorker.ready; });
+  await expect.poll(() => driverPage.evaluate(async () => {
+    const registration = await navigator.serviceWorker.getRegistration("/driver");
+    return { scope: registration?.scope.replace(location.origin, ""), active: registration?.active?.state, waiting: registration?.waiting?.state, installing: registration?.installing?.state };
+  }), { timeout: 10000 }).toMatchObject({ scope: "/driver", active: "activated" });
   await driverPage.reload();
   await expect.poll(() => driverPage.evaluate(() => !!navigator.serviceWorker.controller)).toBe(true);
   expect(await driverPage.evaluate(() => caches.keys())).toEqual([]);
@@ -132,6 +135,12 @@ test("owner explicitly enables access; driver logs in and completes the mobile j
 
 test("refusal leaves a visible operator exception and only another driver can be selected", async ({ page, browser }) => {
   test.setTimeout(120_000);
+  // Independent after a worker restart: enable the account through the same owner UI if needed.
+  if (!(await db.driver.findUniqueOrThrow({ where: { id: driverId } })).userId) {
+    await login(page, email); await page.goto(`/operator/${org}/drivers/${driverId}`);
+    await page.getByRole("button", { name: "Ativar acesso do motorista", exact: true }).click();
+    await expect(page.getByText("Conta associada.", { exact: false })).toBeVisible();
+  }
   await login(page, driverEmail); await page.goto(`/driver/${org}`);
   const card = page.getByRole("article").filter({ hasText: "Cliente Privado" });
   await card.getByText("Recusar serviço", { exact: true }).click();
