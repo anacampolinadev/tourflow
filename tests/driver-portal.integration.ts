@@ -187,6 +187,19 @@ describe("private driver accounts and execution", () => {
     expect((await current()).version).toBe(1); await actOnDriverBooking(org, bookingId, command("DECLINE"));
     expect((await current()).status).toBe("DRIVER_DECLINED");
   });
+  it("prevents starting a second trip while an earlier trip is still in progress, even after its scheduled end", async () => {
+    const db = getDb(); session.userId = owner;
+    const later = await createBooking(org, bookingInput("14:00"));
+    await dispatchBooking(org, later.id, manual(a, large));
+    const now = Date.now();
+    await db.booking.update({ where: { id: bookingId }, data: { status: "IN_PROGRESS", startsAt: new Date(now - 7200000), endsAt: new Date(now - 3600000) } });
+    await db.bookingOccupancy.update({ where: { bookingId }, data: { startsAt: new Date(now - 8100000), endsAt: new Date(now - 2700000) } });
+    await db.booking.update({ where: { id: later.id }, data: { status: "ARRIVED", startsAt: new Date(now - 60000), endsAt: new Date(now + 3600000) } });
+    await db.bookingOccupancy.update({ where: { bookingId: later.id }, data: { startsAt: new Date(now - 900000), endsAt: new Date(now + 4500000) } });
+    session.userId = driverUser;
+    await expect(actOnDriverBooking(org, later.id, command("START"))).rejects.toThrow("serviço em curso");
+    expect((await db.booking.findUniqueOrThrow({ where: { id: later.id } })).status).toBe("ARRIVED");
+  });
   it("rolls back status, events and audit if the action record fails", async () => {
     const db = getDb(), name = 'driver_test_' + suffix.replaceAll('-', '');
     const before = await current(), events = await db.bookingEvent.count({ where: { bookingId } }), audits = await db.auditLog.count({ where: { organizationId: org } });

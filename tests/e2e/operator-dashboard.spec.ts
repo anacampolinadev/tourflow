@@ -68,7 +68,7 @@ test("operator dashboard connects daily actions, filtered reservations, customer
   const errors: string[] = []; page.on("pageerror", (error) => errors.push(error.message)); page.on("console", (message) => { if (message.type() === "error") errors.push(message.text()); });
   await login(page, email); await page.goto(path());
   await expect(page.getByRole("heading", { name: "Sintra Operações", exact: true })).toBeVisible();
-  await expect(metric(page, "Reservas ativas")).toHaveText("2"); await expect(metric(page, "Aguardam atribuição")).toHaveText("1");
+  await expect(metric(page, "Reservas não canceladas")).toHaveText("2"); await expect(metric(page, "Aguardam atribuição")).toHaveText("1");
   await expect(metric(page, "Atribuídas em teste")).toHaveText("1"); await expect(metric(page, "Motoristas com janela")).toHaveText("2");
   await expect(page.getByText("1 reserva precisa de redistribuição", { exact: true })).toBeVisible();
   await expect(page.locator(`.attention-list a[href$="/dispatch/${privateBookingId}"]`)).toBeVisible();
@@ -84,11 +84,11 @@ test("operator dashboard connects daily actions, filtered reservations, customer
   await page.getByRole("link", { name: /Consultar reserva ·/ }).click(); await expect(page.getByRole("article")).toHaveCount(1); await expect(page.getByRole("article")).toContainText("Mariana Teste");
   await page.getByRole("navigation", { name: "Navegação do operador" }).getByRole("link", { name: "Relatórios", exact: true }).click();
   await page.getByLabel("De", { exact: true }).fill(date); await page.getByLabel("Até", { exact: true }).fill(date); await page.getByRole("button", { name: "Ver relatório", exact: true }).click();
-  await expect(metric(page, "Reservas ativas")).toHaveText("2"); await expect(metric(page, "Canceladas")).toHaveText("1"); await expect(page.locator(".report-value strong")).toContainText("399,20");
+  await expect(metric(page, "Reservas não canceladas")).toHaveText("2"); await expect(metric(page, "Canceladas")).toHaveText("1"); await expect(page.locator(".report-value strong")).toContainText("399,20");
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
   await page.screenshot({ path: "test-results/dashboard-report-mobile.png", fullPage: true, caret: "initial" });
   await page.goto(path()); await db.booking.update({ where: { id: bookingId }, data: { status: "CANCELLED" } });
-  await page.getByRole("button", { name: "Atualizar dados", exact: true }).click(); await expect(metric(page, "Reservas ativas")).toHaveText("1"); await expect(metric(page, "Aguardam atribuição")).toHaveText("0");
+  await page.getByRole("button", { name: "Atualizar dados", exact: true }).click(); await expect(metric(page, "Reservas não canceladas")).toHaveText("1"); await expect(metric(page, "Aguardam atribuição")).toHaveText("0");
   await page.getByRole("navigation", { name: "Navegação do operador" }).getByRole("link", { name: "Configurações", exact: true }).click();
   await expect(page.getByRole("link", { name: "Configurar agenda", exact: true })).toBeVisible(); expect(errors).toEqual([]);
 });

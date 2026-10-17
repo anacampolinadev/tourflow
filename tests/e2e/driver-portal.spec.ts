@@ -84,11 +84,15 @@ test("owner explicitly enables access; driver logs in and completes the mobile j
   driverPage.on("console", message => { if (message.type() === "error" && !message.text().includes("net::ERR_INTERNET_DISCONNECTED") && !message.text().includes("503")) errors.push(message.text()); });
   await login(driverPage, driverEmail); await driverPage.getByRole("link", { name: /motorista$/ }).click();
   await expect(driverPage.getByRole("heading", { name: "Olá, João da Serra" })).toBeVisible();
+  await driverPage.goto("/driver"); await expect(driverPage).toHaveURL(`/driver/${org}`);
   expect(await driverPage.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
   const card = driverPage.getByRole("article").filter({ hasText: "Cliente Distribuição" });
   await expect(card).toBeVisible(); await expect(card).not.toContainText("private-dispatch-ui@example.test");
   await expect(card.getByRole("link", { name: "Abrir rota no mapa" })).toHaveAttribute("href", /destination=Sintra/);
   await driverPage.screenshot({ path: "test-results/driver-mobile.png", fullPage: true, caret: "initial" });
+  await driverPage.setViewportSize({ width: 1280, height: 900 });
+  await driverPage.screenshot({ path: "test-results/driver-desktop.png", fullPage: true, caret: "initial" });
+  await driverPage.setViewportSize({ width: 390, height: 844 });
   for (const [name, status] of [["Aceitar serviço", "DRIVER_ACCEPTED"], ["Cheguei ao encontro", "ARRIVED"], ["Passageiros a bordo — iniciar", "IN_PROGRESS"]] as const) {
     await card.getByRole("button", { name, exact: true }).click();
     await expect.poll(async () => (await db.booking.findUniqueOrThrow({ where: { id: bookingId } })).status).toBe(status);
@@ -119,6 +123,10 @@ test("owner explicitly enables access; driver logs in and completes the mobile j
   expect(errors).toEqual([]);
   driverPage.removeAllListeners("console");
   expect((await driverPage.goto(`/operator/${org}/bookings`))?.status()).toBe(404);
+  await driverPage.goto(`/driver/${org}`);
+  await driverPage.getByRole("button", { name: "Sair", exact: true }).click(); await expect(driverPage).toHaveURL(/\/login$/);
+  await driverPage.goto(`/driver/${org}`); await expect(driverPage).toHaveURL(/\/login$/);
+  await expect(driverPage.getByText("Cliente Privado", { exact: true })).toHaveCount(0);
   await context.close(); expect(errors).toEqual([]);
 });
 

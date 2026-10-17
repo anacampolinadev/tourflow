@@ -12,6 +12,8 @@ export async function enableDriverAccount(organizationId: string, driverId: stri
   const context = await currentTenant(organizationId); requirePermission(context, "members:manage"); recordVersion.parse(version);
   return getDb().$transaction(async (tx) => {
     await lockOperatorCatalog(tx, context.organizationId);
+    const grantor = await tx.organizationMember.findUnique({ where: { organizationId_userId: { organizationId: context.organizationId, userId: context.actorId } }, include: { user: { select: { active: true } } } });
+    if (!grantor?.active || grantor.role !== "OPERATOR_OWNER" || !grantor.user.active) throw new AccessDenied();
     const driver = await tx.driver.findFirst({ where: { organizationId: context.organizationId, id: driverId } });
     if (!driver || driver.version !== version) throw new DriverPortalError("O cadastro mudou. Atualize a página.");
     if (driver.userId) throw new DriverPortalError("Este motorista já tem uma conta associada.");
@@ -59,6 +61,7 @@ export async function actOnDriverBooking(organizationId: string, bookingId: stri
     if (!booking) throw new AccessDenied();
     if (booking.version !== input.expectedVersion) throw new DriverPortalError("O serviço mudou. Atualize a página.");
     const now = new Date(), status = driverTransition(booking.status, input.type, booking.startsAt, booking.endsAt, now);
+    if (input.type === "START" && await tx.booking.findFirst({ where: { organizationId: context.organizationId, id: { not: bookingId }, status: "IN_PROGRESS", occupancy: { driverId: driver.id, releasedAt: null } }, select: { id: true } })) throw new DriverPortalError("Conclua o serviço em curso antes de iniciar outro.");
     // Refusal and closure remain possible under restriction; starting/accepting never bypass gates.
     if (input.type !== "DECLINE" && input.type !== "COMPLETE") {
       await assertSandboxBookingApproval(tx, context.organizationId, now);
