@@ -62,7 +62,7 @@ test.afterAll(async () => {
   await db.verificationToken.deleteMany({ where: { identifier: { in: [email, outsiderEmail] } } }); await db.user.deleteMany({ where: { email: { in: [email, outsiderEmail] } } }); await db.$disconnect();
 });
 
-const metric = (page: Page, label: string) => page.locator("main").getByText(label, { exact: true }).locator("..").locator("dd");
+const metric = (page: Page, label: string) => page.locator(".dashboard-metrics").getByText(label, { exact: true }).locator("..").locator("dd");
 test("operator dashboard connects daily actions, filtered reservations, customers, reports and refresh", async ({ page }) => {
   test.setTimeout(120_000);
   const errors: string[] = []; page.on("pageerror", (error) => errors.push(error.message)); page.on("console", (message) => { if (message.type() === "error") errors.push(message.text()); });
@@ -70,7 +70,7 @@ test("operator dashboard connects daily actions, filtered reservations, customer
   await expect(page.getByRole("heading", { name: "Sintra Operações", exact: true })).toBeVisible();
   await expect(metric(page, "Reservas ativas")).toHaveText("2"); await expect(metric(page, "Aguardam atribuição")).toHaveText("1");
   await expect(metric(page, "Atribuídas em teste")).toHaveText("1"); await expect(metric(page, "Motoristas com janela")).toHaveText("2");
-  await expect(page.getByText("1 reservas com última distribuição sem candidatos", { exact: true })).toBeVisible();
+  await expect(page.getByText("1 reserva com última distribuição sem candidatos", { exact: true })).toBeVisible();
   await expect(page.locator(`.attention-list a[href$="/dispatch/${privateBookingId}"]`)).toBeVisible();
   await page.screenshot({ path: "test-results/dashboard.png", fullPage: true, caret: "initial" });
   await page.setViewportSize({ width: 390, height: 844 }); expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
@@ -106,4 +106,3 @@ test("viewer sees read-only navigation, invalid filters recover and private page
   for (const suffix of ["", "/customers", "/reports", "/settings"]) { expect((await other.goto(`/operator/${org}${suffix}`))?.status()).toBe(404); await expect(other.getByText("Mariana Teste", { exact: true })).toHaveCount(0); }
   await context.close();
 });
-

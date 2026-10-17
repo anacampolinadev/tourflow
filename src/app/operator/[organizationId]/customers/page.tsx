@@ -13,7 +13,7 @@ export default async function Customers({ params, searchParams }: { params: Prom
   return <main className="operator-catalog"><p className="eyebrow">Relação com o cliente</p><h1>Clientes</h1><p>Contactos registados nas reservas de teste. A mesma pessoa pode aparecer mais de uma vez; os dados de cada reserva são preservados.</p>
     {!parsed.success ? <p role="alert">Filtros inválidos. Mostramos a primeira página sem filtros.</p> : null}
     <form className="filters"><div><label htmlFor="customer-search">Pesquisar nome, e-mail ou telefone</label><input id="customer-search" name="search" defaultValue={query.search} maxLength={120} /></div><button>Pesquisar clientes</button><Link href={`/operator/${organizationId}/customers`}>Limpar pesquisa</Link></form>
-    <p>{data.total} contactos encontrados.</p>
+    <p>{data.total} {data.total === 1 ? "contacto encontrado" : "contactos encontrados"}.</p>
     {data.customers.length ? <ul className="resource-list">{data.customers.map((customer) => <li key={customer.id}><h2>{customer.name}</h2><p>{customer.email} · {customer.phone}</p>{customer.bookings[0] ? <p><Link href={`/operator/${organizationId}/bookings?${new URLSearchParams({ search: customer.bookings[0].id })}`}>Consultar reserva · {customer.bookings[0].serviceName}</Link></p> : <p>Sem reserva associada.</p>}</li>)}</ul> : <p className="empty-state">Nenhum contacto corresponde à pesquisa.</p>}
     <nav aria-label="Páginas de clientes">{query.page > 1 ? <Link href={href(query.page - 1)}>Anterior</Link> : null}<span>Página {query.page}</span>{data.hasNext ? <Link href={href(query.page + 1)}>Seguinte</Link> : null}</nav>
   </main>;

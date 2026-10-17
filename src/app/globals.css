@@ -117,3 +117,8 @@ summary { cursor: pointer; padding: .5rem 0; }
   .dashboard-metrics > div { padding: .9rem; }
   .dashboard-tools { font-size: .9rem; }
 }
+
+.operator-shell .table-scroll table { min-width: 42rem; }
+.dashboard-tools button { margin-top: 0; }
+.dashboard-day .filters { flex-wrap: nowrap; }
+.dashboard-day .filters > div { flex: 0 1 14rem; min-width: 0; }

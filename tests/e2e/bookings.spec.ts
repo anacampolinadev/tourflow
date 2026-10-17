@@ -80,10 +80,10 @@ test("real authenticated booking, failed conflict, cancellation and freed capaci
   await expect.poll(() => db.booking.count({ where: { organizationId: org } })).toBe(2);
   await expect(page.getByRole("article")).toHaveCount(2);
   if (await page.getByRole("button", { name: "Confirmar reserva de teste", exact: true }).isVisible()) await page.getByText("Nova reserva de teste", { exact: true }).click();
-  await page.screenshot({ path: "test-results/bookings.png", fullPage: true });
+  await page.screenshot({ path: "test-results/bookings.png", fullPage: true, caret: "initial" });
   await page.setViewportSize({ width: 390, height: 844 });
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
-  await page.screenshot({ path: "test-results/bookings-mobile.png", fullPage: true }); expect(errors).toEqual([]);
+  await page.screenshot({ path: "test-results/bookings-mobile.png", fullPage: true, caret: "initial" }); expect(errors).toEqual([]);
 });
 
 test("viewer reads without write actions and outsiders cannot see customer data", async ({ page, browser }) => {
