@@ -64,3 +64,6 @@ Portal/PWA privado em /driver/[organizationId]. Responsável ativa o acesso no c
 
 ### Sprint 10 — White-label
 Em Configurações → Identidade da marca, o responsável gera a configuração de teste após aprovação documental e define nome, cores e PNG. Identidade aplicada por organização ao painel e ao portal/PWA do motorista, com ícones privados e contraste legível. Geração repetível sem duplicar dados; não publica nem altera produção. Ver [contratos e limites](docs/SPRINT_10.md). Sem variável de ambiente nova; sharp 0.35.5 passa a dependência explícita para normalizar imagens.
+
+### Sprint 11 — Alana Core
+Em Configurações → Assistente Alana, o responsável prepara e personaliza a assistente, consulta instruções e histórico privado. Exige aprovação documental nas escritas. Sem modelo de IA, ferramentas ou canais ligados nesta etapa; o atendimento ao público continua desativado. Migration acrescenta perfis e versões; não há variável ou dependência nova. Ver [contratos e limites](docs/SPRINT_11.md).

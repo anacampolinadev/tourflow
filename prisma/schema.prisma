@@ -105,6 +105,7 @@ model Organization {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   brand BrandProfile?
+  assistant AssistantProfile?
   members OrganizationMember[]
   operator OperatorProfile?
   auditLogs AuditLog[]
@@ -533,4 +534,24 @@ model BrandProfile {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+}
+
+model AssistantProfile {
+  organizationId String @id
+  version Int @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  versions AssistantVersion[]
+}
+
+model AssistantVersion {
+  organizationId String
+  version Int
+  configuration Json
+  instructions String @db.Text
+  playbookVersion String
+  createdAt DateTime @default(now())
+  profile AssistantProfile @relation(fields: [organizationId], references: [organizationId], onDelete: Restrict)
+  @@id([organizationId, version])
 }

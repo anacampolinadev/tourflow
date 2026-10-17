@@ -56,3 +56,6 @@ drivers/portal-domain.ts contém transições/tempos puros; portal.ts compõe id
 
 ## White-label — Sprint 10
 branding é um módulo independente (auth/compliance/tenants por APIs públicas), evitando ciclo com compliance. Factory e edição usam root lock, gate de aprovação, versão própria e audit atómico; nenhuma duplicação de workspaces/dados. BrandProfile/ativos privados em PostgreSQL. sharp explícito normaliza PNG e produz ícones; CSS apenas hex com contraste calculado e escopo de tenant. Metadados/autenticação de manifesto por organização; React cache restrito ao pedido. Sem resolução por Host/DNS nem publicação. Ver [Sprint 10](SPRINT_10.md).
+
+## Alana Core — Sprint 11
+Módulo assistants expõe initializeAssistant/updateAssistant/readAssistant; domínio puro valida dados e compõe instruções, service server-only autoriza owner e persiste snapshots sob lock da raiz e gate documental. Perfil atual, histórico por tenant e auditoria atómicos; RepeatableRead nas consultas. Playbook em código, dados de referência JSON de menor confiança, contactos internos excluídos do prompt. Sem inferência/SDK/adapters ou ferramentas: operação fica para os sprints seguintes. Ver [Sprint 11](SPRINT_11.md).

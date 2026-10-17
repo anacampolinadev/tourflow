@@ -66,3 +66,6 @@ Driver.userId opcional com FK User e unique(organizationId,userId). DriverAction
 
 ## Modelo físico 10
 BrandProfile tem organizationId como PK/FK Organization RESTRICT, nome/cores, logo opcional/hasLogo, ícones PNG192/512, versão e timestamps. CHECKs de identidade e limites/coerência dos bytes; seleção mínima de campos nas consultas de identidade. Atualização compare-and-swap e auditoria no lock da raiz; geração idempotente por organização. Não modifica status/version de OperatorProfile, identidade User ou snapshots de reserva. Ver [Sprint 10](SPRINT_10.md).
+
+## Modelo físico 11
+AssistantProfile: organizationId PK/FK RESTRICT, versão atual, datas. AssistantVersion: PK (organizationId,version), FK RESTRICT para perfil, configuration JSONB, instructions TEXT, playbookVersion e data. Snapshot imutável pela API, sem exclusão/restauro; limite de 100 versões. CHECKs de versão/formato/bytes complementam Zod estrito. Contactos privados no snapshot, nunca em audit/prompt. Nenhuma alteração de status ou versão de OperatorProfile. Ver [Sprint 11](SPRINT_11.md).
