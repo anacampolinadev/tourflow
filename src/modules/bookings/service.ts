@@ -68,7 +68,7 @@ export async function readBookings(organizationId: string, page = 1) {
   const index = recordVersion.min(1).max(10000).parse(page);
   const [organization, bookings] = await Promise.all([
     getDb().organization.findUniqueOrThrow({ where: { id: context.organizationId }, select: { id: true, name: true, timeZone: true, services: { where: { active: true }, select: { id: true, name: true, basePriceCents: true, currency: true, pricingType: true }, orderBy: { name: "asc" } } } }),
-    getDb().booking.findMany({ where: { organizationId: context.organizationId }, include: { customer: true, events: { orderBy: { createdAt: "asc" } } }, orderBy: [{ createdAt: "desc" }, { id: "desc" }], take: 21, skip: (index - 1) * 20 }),
+    getDb().booking.findMany({ where: { organizationId: context.organizationId }, include: { customer: true, occupancy: { include: { driver: { select: { name: true } }, vehicle: { select: { name: true } } } }, events: { orderBy: { createdAt: "asc" } } }, orderBy: [{ createdAt: "desc" }, { id: "desc" }], take: 21, skip: (index - 1) * 20 }),
   ]);
   return { organization, context, bookings: bookings.slice(0, 20), hasNext: bookings.length > 20, page: index };
 }

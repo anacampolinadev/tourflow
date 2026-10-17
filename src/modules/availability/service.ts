@@ -104,7 +104,7 @@ export async function checkAvailability(organizationId: string, raw: unknown) {
   return getDb().$transaction((tx) => availabilityInTransaction(tx, organizationId, input, now), { isolationLevel: "RepeatableRead" });
 }
 // Internal server contract: caller authorizes the tenant and locks its root before writes.
-export async function availabilityInTransaction(tx: Prisma.TransactionClient, organizationId: string, raw: unknown, now = new Date()) {
+export async function availabilityInTransaction(tx: Prisma.TransactionClient, organizationId: string, raw: unknown, now = new Date(), options: { excludeBookingId?: string } = {}) {
   const input = availabilityInput.parse(raw);
   const organization = await tx.organization.findUniqueOrThrow({ where: { id: organizationId }, select: { timeZone: true, operator: { select: { status: true } } } });
   const start = localToDate(`${input.date}T${input.time}`, organization.timeZone), from = new Date(start.valueOf() - 86400000), until = new Date(start.valueOf() + 10 * 86400000);
@@ -115,7 +115,7 @@ export async function availabilityInTransaction(tx: Prisma.TransactionClient, or
     tx.driver.findMany({ where: { organizationId }, select: { id: true, organizationId: true, name: true, status: true, languages: true } }),
     tx.driverAvailability.findMany({ where: { organizationId, active: true, startsAt: { lt: until }, endsAt: { gt: from } } }),
     tx.resourceBlock.findMany({ where: { organizationId, active: true, startsAt: { lt: until }, endsAt: { gt: from } } }),
-    tx.bookingOccupancy.findMany({ where: { organizationId, releasedAt: null, startsAt: { lt: until }, endsAt: { gt: from } } }),
+    tx.bookingOccupancy.findMany({ where: { organizationId, ...(options.excludeBookingId ? { bookingId: { not: options.excludeBookingId } } : {}), releasedAt: null, startsAt: { lt: until }, endsAt: { gt: from } } }),
   ]);
   return evaluateAvailability({ organizationId, timeZone: organization.timeZone, operatorStatus: organization.operator?.status ?? "LEAD", service, schedules, vehicles: links.map((link) => link.vehicle), drivers, windows, blocks: [...blocks, ...occupations.map((row) => ({ ...row, active: true }))] }, input, now);
 }

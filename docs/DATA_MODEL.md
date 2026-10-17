@@ -54,3 +54,6 @@ DriverAvailability referencia motorista por (id, organizationId), intervalo UTC 
 
 ## Modelo físico 06
 Customer é snapshot privado por reserva, associado por tenant. Booking referencia Service/Customer por FKs compostas; unicidade tenant/chave de idempotência, hash do payload, modo SANDBOX, estados CONFIRMED/CANCELLED, versão, passageiros, idioma, instantes/fuso, preço e condições preservados. BookingOccupancy referencia Booking/Vehicle/Driver no mesmo tenant, intervalo com pausas e releasedAt; EXCLUDE com btree_gist impede sobreposição por cada recurso. BookingEvent preserva transições confirmada/cancelada por tenant, sem contactos/notas. CHECKs de intervalo/valores complementam schemas Zod; sem manifesto nominal nesta fase. Ver [Sprint 06](SPRINT_06.md).
+
+## Modelo físico 07
+BookingStatus acrescenta ASSIGNED, também usado no BookingEvent. DispatchDecision referencia reserva/veículo/motorista por FKs compostas de tenant e ator User; unicidade tenant/chave, hash, versão resultante, modo AUTO/MANUAL, resultado ASSIGNED/NO_CANDIDATE, score em pontos-base, motivo privado e JSON de fatores/candidatos/janela/seleção. CHECKs defendem resultado/par/score e versão positiva. Occupancy continua única por reserva, atualizada atomicamente sem janela de liberação; decisões anteriores permanecem imutáveis nos casos de uso. Ver [Sprint 07](SPRINT_07.md).

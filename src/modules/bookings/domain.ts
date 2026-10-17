@@ -19,5 +19,7 @@ export function bookingPrice(pricingType: "PER_PERSON" | "PER_GROUP", unitPriceC
   return total;
 }
 export function assertCancellable(status: string) {
-  if (status !== "CONFIRMED" && status !== "CANCELLED") throw new BookingError("Esta reserva não pode ser cancelada neste estado.");
+  if (status !== "CONFIRMED" && status !== "ASSIGNED" && status !== "CANCELLED") throw new BookingError("Esta reserva não pode ser cancelada neste estado.");
 }
+
+export const bookingLabels = { CONFIRMED: "Confirmada em teste", ASSIGNED: "Atribuída em teste", CANCELLED: "Cancelada" };
