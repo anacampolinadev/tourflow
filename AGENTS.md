@@ -1,6 +1,6 @@
 # TourFlow — instruções para agentes
 
-Leia primeiro docs/CODEX_RULES.md, docs/PRODUCT.md e docs/ARCHITECTURE.md. Consulte docs/DATA_MODEL.md quando a tarefa envolver persistência. Sprints 01–08 validados em PRs empilhados. Sprint 09 autorizado: Portal/PWA do motorista. Não avançar ao Sprint 10 sem novo pedido. Consulte docs/SPRINT_09.md e as evidências anteriores.
+Leia primeiro docs/CODEX_RULES.md, docs/PRODUCT.md e docs/ARCHITECTURE.md. Consulte docs/DATA_MODEL.md quando a tarefa envolver persistência. Sprints 01–09 implementados em PRs empilhados. Última entrega: Sprint 09 — Portal/PWA do motorista. Não avançar ao Sprint 10 sem novo pedido. Consulte docs/SPRINT_09.md e os resultados de validação no relatório de entrega.
 
 <!-- BEGIN:nextjs-agent-rules -->
 

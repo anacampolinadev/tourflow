@@ -89,16 +89,16 @@ test("owner explicitly enables access; driver logs in and completes the mobile j
   const card = driverPage.getByRole("article").filter({ hasText: "Cliente Distribuição" });
   await expect(card).toBeVisible(); await expect(card).not.toContainText("private-dispatch-ui@example.test");
   await expect(card.getByRole("link", { name: "Abrir rota no mapa" })).toHaveAttribute("href", /destination=Sintra/);
-  await driverPage.screenshot({ path: "test-results/driver-mobile.png", fullPage: true, caret: "initial" });
+  await driverPage.screenshot({ path: "test-results/driver-mobile.png", fullPage: true, caret: "initial", style: "nextjs-portal { visibility: hidden; }" });
   await driverPage.setViewportSize({ width: 1280, height: 900 });
-  await driverPage.screenshot({ path: "test-results/driver-desktop.png", fullPage: true, caret: "initial" });
+  await driverPage.screenshot({ path: "test-results/driver-desktop.png", fullPage: true, caret: "initial", style: "nextjs-portal { visibility: hidden; }" });
   await driverPage.setViewportSize({ width: 390, height: 844 });
   for (const [name, status] of [["Aceitar serviço", "DRIVER_ACCEPTED"], ["Cheguei ao encontro", "ARRIVED"], ["Passageiros a bordo — iniciar", "IN_PROGRESS"]] as const) {
     await card.getByRole("button", { name, exact: true }).click();
     await expect.poll(async () => (await db.booking.findUniqueOrThrow({ where: { id: bookingId } })).status).toBe(status);
     await expect(card).toContainText(status === "DRIVER_ACCEPTED" ? "Aceite em teste" : status === "ARRIVED" ? "No encontro em teste" : "Em curso em teste");
   }
-  await driverPage.screenshot({ path: "test-results/driver-in-progress.png", fullPage: true, caret: "initial" });
+  await driverPage.screenshot({ path: "test-results/driver-in-progress.png", fullPage: true, caret: "initial", style: "nextjs-portal { visibility: hidden; }" });
   await card.getByRole("button", { name: "Concluir serviço", exact: true }).click();
   await expect.poll(async () => (await db.booking.findUniqueOrThrow({ where: { id: bookingId } })).status).toBe("COMPLETED");
   await expect(driverPage.getByRole("article").filter({ hasText: "Cliente Distribuição" })).toHaveCount(0);
@@ -117,6 +117,7 @@ test("owner explicitly enables access; driver logs in and completes the mobile j
   await context.setOffline(true); await driverPage.reload();
   await expect(driverPage.getByRole("heading", { name: "Sem ligação", exact: true })).toBeVisible();
   await expect(driverPage.locator("body")).not.toContainText("Cliente Distribuição");
+  await driverPage.screenshot({ path: "test-results/driver-offline.png", fullPage: true, caret: "initial" });
   await context.setOffline(false); await driverPage.reload();
   await expect(driverPage.getByRole("heading", { name: "Olá, João da Serra" })).toBeVisible();
   const manifest = await driverPage.request.get("/driver/manifest.webmanifest"); expect(manifest.ok()).toBe(true);
@@ -127,6 +128,8 @@ test("owner explicitly enables access; driver logs in and completes the mobile j
   driverPage.removeAllListeners("console");
   expect((await driverPage.goto(`/operator/${org}/bookings`))?.status()).toBe(404);
   await driverPage.goto(`/driver/${org}`);
+  // The fixed Next development toolbar overlaps the mobile footer; test logout at desktop width.
+  await driverPage.setViewportSize({ width: 1280, height: 900 });
   await driverPage.getByRole("button", { name: "Sair", exact: true }).click(); await expect(driverPage).toHaveURL(/\/login$/);
   await driverPage.goto(`/driver/${org}`); await expect(driverPage).toHaveURL(/\/login$/);
   await expect(driverPage.getByText("Cliente Privado", { exact: true })).toHaveCount(0);
