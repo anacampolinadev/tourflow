@@ -70,7 +70,7 @@ test("operator dashboard connects daily actions, filtered reservations, customer
   await expect(page.getByRole("heading", { name: "Sintra Operações", exact: true })).toBeVisible();
   await expect(metric(page, "Reservas ativas")).toHaveText("2"); await expect(metric(page, "Aguardam atribuição")).toHaveText("1");
   await expect(metric(page, "Atribuídas em teste")).toHaveText("1"); await expect(metric(page, "Motoristas com janela")).toHaveText("2");
-  await expect(page.getByText("1 reserva com última distribuição sem candidatos", { exact: true })).toBeVisible();
+  await expect(page.getByText("1 reserva precisa de redistribuição", { exact: true })).toBeVisible();
   await expect(page.locator(`.attention-list a[href$="/dispatch/${privateBookingId}"]`)).toBeVisible();
   await page.screenshot({ path: "test-results/dashboard.png", fullPage: true, caret: "initial" });
   await page.setViewportSize({ width: 390, height: 844 }); expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);

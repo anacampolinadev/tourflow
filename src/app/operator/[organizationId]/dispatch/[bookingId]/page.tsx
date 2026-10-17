@@ -18,7 +18,7 @@ export default async function Dispatch({ params, searchParams }: { params: Promi
   return <main className="operator-catalog"><Link href={`/operator/${organizationId}/bookings`}>Reservas</Link>
     <h1>Distribuição interna</h1><h2>{booking.serviceName}</h2>
     <p>{bookingLabels[booking.status]} · {booking.passengers} passageiros · {localLabel(booking.startsAt, booking.timeZone).replace("T", " ")} ({booking.timeZone})</p>
-    <p>Modo de teste. Não envia pedidos ao motorista nem confirma aptidão documental individual. A aprovação documental do operador é obrigatória.</p>
+    <p>Modo de teste. As atribuições aparecem no portal do motorista; não há notificações automáticas nem confirmação de aptidão documental individual. A aprovação documental do operador é obrigatória.</p>
     {booking.occupancy && booking.status !== "CANCELLED" ? <p>Recursos {!["CONFIRMED", "DRIVER_DECLINED"].includes(booking.status) ? "atribuídos em teste" : "ocupados provisoriamente"}: {booking.occupancy.driver.name} · {booking.occupancy.vehicle.name}</p> : null}
     {query.result === "assigned" ? <p role="status">Atribuição de teste guardada.</p> : query.result === "unavailable" ? <p role="alert">Sem candidatos elegíveis. A ocupação anterior foi preservada.</p> : null}
     {data.unavailable ? <p role="alert">{data.unavailable}</p> : null}
