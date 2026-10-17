@@ -83,7 +83,7 @@ test("owner runs rollback-only QA, admin records a blocked conversation and chan
   await admin.screenshot({ path: "test-results/qa-admin.png", fullPage: true, caret: "initial", style: "nextjs-portal { visibility: hidden; }" });
   await page.reload(); await expect(page.getByRole("region", { name: "Revisão humana", exact: true })).toContainText("Impedimento registado · revisão 1");
   await db.service.update({ where: { id: serviceId }, data: { version: { increment: 1 } } }); await page.reload();
-  await expect(page.getByRole("alert")).toContainText("Relatório desatualizado");
+  await expect(page.getByRole("main").getByRole("alert")).toContainText("Relatório desatualizado");
   expect((await db.operatorProfile.findUniqueOrThrow({ where: { organizationId: org } })).status).toBe("SANDBOX");
   await admin.close(); expect(errors).toEqual([]);
 });
