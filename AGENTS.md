@@ -1,6 +1,6 @@
 # TourFlow — instruções para agentes
 
-Leia primeiro docs/CODEX_RULES.md, docs/PRODUCT.md e docs/ARCHITECTURE.md. Consulte docs/DATA_MODEL.md quando a tarefa envolver persistência. Sprints 01–13 implementados em PRs empilhados. Última entrega: Sprint 13 — Sandbox/QA. Não avançar ao Sprint 14 sem novo pedido. Consulte docs/SPRINT_13.md e os resultados de validação no relatório de entrega.
+Leia primeiro docs/CODEX_RULES.md, docs/PRODUCT.md e docs/ARCHITECTURE.md. Consulte docs/DATA_MODEL.md quando a tarefa envolver persistência. Sprints 01–14 implementados em PRs empilhados. Última entrega: Sprint 14 — Managed Ops. Não avançar ao Sprint 15 sem novo pedido. Consulte docs/SPRINT_14.md e os resultados de validação no relatório de entrega.
 
 <!-- BEGIN:nextjs-agent-rules -->
 

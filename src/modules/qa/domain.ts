@@ -1,5 +1,5 @@
 import { z } from "zod";
-export const QA_SUITE_VERSION = "qa-contracts-1";
+export const QA_SUITE_VERSION = "qa-contracts-2";
 export const qaCases = {
   DOCUMENTS: "Aprovação documental válida", BRAND: "Identidade da marca preparada", ASSISTANT: "Configuração atual da assistente",
   HOURS: "Horário de atendimento definido", POLICIES: "Políticas definidas", FAQ: "Perguntas frequentes definidas", ESCALATION: "Contacto humano interno definido", SERVICES: "Serviços ativos", RESOURCES: "Veículo e motorista com acesso ativo",

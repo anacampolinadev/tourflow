@@ -47,7 +47,7 @@ export async function readAssistantSession(organizationId: string, conversationI
 export async function readAssistantHandoffs(organizationId: string) {
   const context = await owner(organizationId);
   // Internal owner queue only: reasons may contain private customer reference data.
-  return getDb().assistantHandoff.findMany({ where: { organizationId: context.organizationId }, select: { id: true, reason: true, createdAt: true }, orderBy: [{ createdAt: "desc" }, { id: "desc" }], take: 50 });
+  return getDb().assistantHandoff.findMany({ where: { organizationId: context.organizationId, status: { not: "RESOLVED" } }, select: { id: true, reason: true, status: true, createdAt: true }, orderBy: [{ createdAt: "desc" }, { id: "desc" }], take: 50 });
 }
 /** Context is supplied by the authenticated server adapter, never by tool input. No public endpoint. */
 export async function executeAssistantTool(organizationId: string, conversationId: string, callId: string, raw: unknown): Promise<ToolResult> {
@@ -112,7 +112,7 @@ export async function executeAssistantToolInTransaction(tx: Prisma.TransactionCl
     await tx.assistantToolCall.create({ data: { conversationId, organizationId: context.organizationId, callId, tool: request.tool, requestHash: hash } });
     await tx.auditLog.create({ data: { organizationId: context.organizationId, actorId: context.actorId, action: "assistant.handoff_registered", metadata: { conversationId, handoffId: handoff.id, mode: "SANDBOX", notificationSent: false } } });
   }
-  return success("Pedido de atendimento humano registado na fila interna. Nenhuma mensagem foi enviada.", { handoff: { id: handoff.id, status: "OPEN", notificationSent: false }, replayed: Boolean(previous) });
+  return success("Pedido de atendimento humano registado; estado atual consultado. Nenhuma mensagem foi enviada.", { handoff: { id: handoff.id, status: handoff.status, notificationSent: false }, replayed: Boolean(previous) });
 }
 export function assistantToolFailure(error: unknown): ToolResult {
   if (error instanceof AccessDenied) throw error;
