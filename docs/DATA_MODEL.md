@@ -75,3 +75,6 @@ AssistantConversation vincula organização/versão da assistente, User autor e 
 
 ## Modelo físico 13
 QaRun referencia organização/autor, suiteVersion/hash, checks JSONB e validade. QaManualCheck referencia relatório pelo mesmo tenant e revisor, com cenário/revisão/decisão/nota privada; unicidade de revisão e CHECKs de 34 verificações, TTL, tamanhos e decisões FAIL/BLOCKED. Sem PASS de conversação ou exclusão operacional. Probes não deixam reservas/sessões/clientes/audits persistidos. Ver [Sprint 13](SPRINT_13.md).
+
+## Modelo físico 14
+AssistantHandoff acrescenta status OPEN/IN_PROGRESS/RESOLVED, version 0..100, assignedToId User opcional e resolvedAt. Defaults preservam pedidos antigos como abertos. HandoffEvent referencia (handoffId,organizationId) e User ator, versão única por pedido, ação/nota privada/data. CHECKs de coerência estado/atribuição/resolução e evidência/limites. Histórico imutável na API e RESTRICT; audit sem notas/motivos. Saúde é projeção, sem Integration/HealthCheck fictícios ou segredos novos. Ver [Sprint 14](SPRINT_14.md).

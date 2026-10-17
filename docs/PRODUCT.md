@@ -53,3 +53,6 @@ Seis ferramentas de servidor em sessões privadas de teste: catálogo/detalhes, 
 
 ## Sprint 13 — Sandbox/QA
 Bateria por operador com 33 verificações internas e uma pendência explícita de conversação. Testa ferramentas reais em rollback, guarda relatório privado e revisões humanas de falha/impedimento. Dados fictícios não ficam na operação. A primeira execução entra em SANDBOX; conversas, validação do cliente e produção continuam bloqueadas. Ver [contratos e limites](SPRINT_13.md).
+
+## Sprint 14 — Managed Ops
+Central por exceção para owner/admin: assumir, devolver, concluir e reabrir pedidos humanos com histórico privado; saúde de documentos, recusas e execução/distribuição pendente. Canais externos aparecem não integrados; nenhuma notificação ou produção presumida. Ver [contratos e limites](SPRINT_14.md).

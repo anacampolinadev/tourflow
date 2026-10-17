@@ -167,3 +167,13 @@ summary { cursor: pointer; padding: .5rem 0; }
 
 .qa-checks { list-style: none; padding: 0; }
 .qa-checks li, .qa-manual { padding: 1rem; border: 1px solid #cbd5e1; border-radius: .5rem; margin: .75rem 0; overflow-wrap: anywhere; }
+
+.managed-control { overflow-wrap: anywhere; }
+.managed-links, .managed-actions { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; margin: 1rem 0; }
+.managed-links [aria-current=page] { font-weight: 800; text-decoration-thickness: 3px; }
+.managed-card, .managed-health { padding: 1.2rem; margin: 1rem 0; border: 1px solid #cbd5e1; border-radius: .7rem; background: #fff; min-width: 0; }
+.managed-health { border-top: 4px solid #ba802b; background: #fffcf3; }
+.managed-health li { margin: .6rem 0; }
+.managed-note { white-space: pre-wrap; overflow-wrap: anywhere; }
+.managed-actions > form { flex: 1 1 15rem; min-width: 0; }
+.managed-card summary { cursor: pointer; padding: .8rem 0; }

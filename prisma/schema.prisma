@@ -58,6 +58,8 @@ model User {
   qaRuns QaRun[]
   qaReviews QaManualCheck[]
   assistantConversations AssistantConversation[]
+  managedHandoffs AssistantHandoff[]
+  handoffEvents HandoffEvent[]
 }
 
 model Account {
@@ -596,10 +598,33 @@ model AssistantHandoff {
   conversationId String @unique
   organizationId String
   reason String
+  status String @default("OPEN")
+  version Int @default(0)
+  assignedToId String?
+  resolvedAt DateTime?
+  assignedTo User? @relation(fields: [assignedToId], references: [id], onDelete: Restrict)
+  events HandoffEvent[]
   createdAt DateTime @default(now())
   conversation AssistantConversation @relation(fields: [conversationId, organizationId], references: [id, organizationId], onDelete: Restrict)
   @@unique([conversationId, organizationId])
+  @@unique([id, organizationId])
+  @@index([organizationId, status, createdAt])
   @@index([organizationId, createdAt])
+}
+
+model HandoffEvent {
+  id String @id @default(cuid())
+  organizationId String
+  handoffId String
+  version Int
+  action String
+  actorId String
+  note String @default("")
+  createdAt DateTime @default(now())
+  handoff AssistantHandoff @relation(fields: [handoffId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  actor User @relation(fields: [actorId], references: [id], onDelete: Restrict)
+  @@unique([handoffId, version])
+  @@index([organizationId, handoffId])
 }
 
 model QaRun {

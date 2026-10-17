@@ -65,3 +65,6 @@ assistants/tools.ts compõe contratos públicos de services/availability/booking
 
 ## Sandbox/QA — Sprint 13
 Novo módulo qa compõe APIs transacionais públicas de assistants. Probes reais e audit temporário são sempre revertidos; segunda transação persiste relatório somente se identidade, gates e hash de configuração se mantiverem. Snapshot privado, evidência limitada e freshness de até 24h. UI owner/admin separada e revisões humanas imutáveis; nenhum endpoint público ou modelo inferido. Ver [Sprint 13](SPRINT_13.md).
+
+## Managed Ops — Sprint 14
+managed-ops gere o ciclo de AssistantHandoff sob lock raiz/CAS/evento/audit e compõe projeções de saúde atuais em RepeatableRead. API pública em index.ts; sem dependência inversa de assistants nem efeitos externos. Páginas owner/admin partilham componente de servidor; formulários recebem só dados mínimos e ações vinculadas, com autorização independente no serviço. Central administrativa limitada a 20 operadores por página; filas de 20 com totais completos e histórico até 100 eventos por pedido. Leituras owner não escrevem; admin explícito auditado. Canais não integrados permanecem pendentes, sem falsa telemetria. Ver [Sprint 14](SPRINT_14.md).

@@ -73,3 +73,6 @@ Em Assistente Alana → Ferramentas de teste, guarde a configuração atual e in
 
 ### Sprint 13 — Sandbox/QA
 Em Qualidade, o responsável executa 34 verificações: 33 de preparação/ferramentas e uma pendência de conversação real. Probes são revertidos; só relatório/audit ficam guardados. A administração revê falhas/impedimentos de cinco cenários humanos. A primeira bateria entra em testes, sem publicar ou aprovar conversação/produção. Relatórios mudam para desatualizados após alterações, perda documental ou 24h. Ver [contratos e limites](docs/SPRINT_13.md). Sem dependência ou variável nova.
+
+### Sprint 14 — Managed Ops
+Em Atendimento, o responsável assume pedidos humanos, regista resolução ou devolve/reabre a fila; a administração usa Central Managed para acompanhar operadores e intervir com histórico auditado. Precisa de mim mostra documentos a expirar, pendências de distribuição, recusas e execução em atraso. Canais externos permanecem não integrados; nenhuma mensagem é enviada nem produção liberada. Aplicar a migration com o comando habitual e executar as mesmas suites. Sem dependência ou variável nova. Ver [contratos e limites](docs/SPRINT_14.md).
