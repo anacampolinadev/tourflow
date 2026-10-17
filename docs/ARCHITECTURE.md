@@ -17,7 +17,7 @@ Um repositório, uma aplicação Next.js com App Router e um deploy. PostgreSQL 
 ## Fronteiras
 Módulos: auth, tenants, compliance, services, vehicles, drivers, availability, bookings, dispatch, assistants, audit.
 Cada módulo exporá uma API pública por index.ts quando houver implementação. Não importar arquivos internos de outro módulo. Dependências entre módulos devem ser explícitas e sem ciclos. O acesso a banco e segredos ficará exclusivamente no servidor. Não criar abstrações ou repositórios genéricos antes de existir necessidade concreta.
-Rotas atuais: /login, /workspace, /operator/[organizationId], /admin/operators e API Auth.js. /driver e /onboarding continuam para sprints futuros.
+Rotas atuais: /login, /workspace, /operator/[organizationId], /admin/operators e API Auth.js. /driver está implementado no Sprint 09; /onboarding continua para sprint futuro.
 
 ## Stack e adoção
 Ativos: Next.js, React, TypeScript strict, ESLint, Vitest, PostgreSQL/Prisma 7, Auth.js, Nodemailer e Zod; Playwright para fluxo real de login/Admin. npm com lockfile, Node 24 como versão de referência.
@@ -50,3 +50,6 @@ dispatch expõe dispatchBooking/readDispatch por index.ts; domínio puro rankCan
 
 ## Operator UI — Sprint 08
 operator é um módulo de composição de leituras privadas (shell, dia, contactos, relatório), sem alterações de schema ou dependências dos módulos de negócio de volta para ele. APIs públicas em index.ts, auth/compliance por contratos públicos e agregações SQL parametrizadas/Prisma em RepeatableRead. Layout comum e navegação cliente mínima; páginas usam casos de uso autorizados, não dependem apenas do layout. Reservas mantêm filtros no servidor; relatórios usam fuso local e bigint para cêntimos. Não há cache partilhado nem escrita nas leituras. Ver [Sprint 08](SPRINT_08.md).
+
+## Driver PWA — Sprint 09
+drivers/portal-domain.ts contém transições/tempos puros; portal.ts compõe identidade, vínculo explícito e ações transacionais. API pública em drivers/index.ts. UI em /driver e server actions autorizadas; nenhuma regra de negócio no cliente. Service worker restrito a navegação, sem cache/filas privadas, manifesto e ícones locais. Bookings e dispatch entendem as etapas e recusas; operator agrega novos estados. Ver [Sprint 09](SPRINT_09.md).

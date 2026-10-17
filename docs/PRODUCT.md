@@ -38,3 +38,6 @@ Escolha automática por elegibilidade, carga e capacidade; atribuição manual j
 
 ## Sprint 08 — Painel do operador
 Visão diária de reservas/atribuições/janelas, próximas saídas, ações necessárias, navegação por papel e filtros. Consulta de contactos preservados, relatório por saídas locais e configurações em leitura. Indicadores de teste, sem afirmar receita, disponibilidade operacional ou execução. Ver [contratos e limites](SPRINT_08.md).
+
+## Sprint 09 — Motorista
+Portal móvel privado com vínculo explícito, atribuições próprias, aceite/recusa/chegada/início/conclusão e histórico de teste. PWA com manifesto e fallback offline genérico, sem guardar passageiros nem ações offline. Recusas exigem intervenção do operador. Ver [contratos e limites](SPRINT_09.md).

@@ -13,7 +13,7 @@ export default async function Workspace() {
     <h1>O seu espaço</h1>
     {actor.platformRole === "SUPER_ADMIN" ? <Link href="/admin/operators">Administrar operadores</Link> : null}
     <h2>Organizações</h2>
-    {organizations.length ? <ul>{organizations.map((member) => <li key={member.organizationId}>{member.role === "DRIVER" ? <>{member.organization.name} — as suas atribuições estarão disponíveis na etapa do motorista.</> : <Link href={`/operator/${member.organizationId}`}>{member.organization.name}</Link>}</li>)}</ul> : <p>Sem organizações atribuídas. Contacte a administração.</p>}
+    {organizations.length ? <ul>{organizations.map((member) => <li key={member.organizationId}>{member.role === "DRIVER" ? <Link href={`/driver/${member.organizationId}`}>{member.organization.name} — motorista</Link> : <Link href={`/operator/${member.organizationId}`}>{member.organization.name}</Link>}</li>)}</ul> : <p>Sem organizações atribuídas. Contacte a administração.</p>}
     <form action={async () => { "use server"; await signOut({ redirectTo: "/login" }); }}><button type="submit">Sair</button></form>
   </main>;
 }

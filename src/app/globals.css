@@ -122,3 +122,27 @@ summary { cursor: pointer; padding: .5rem 0; }
 .dashboard-tools button { margin-top: 0; }
 .dashboard-day .filters { flex-wrap: nowrap; }
 .dashboard-day .filters > div { flex: 0 1 14rem; min-width: 0; }
+
+/* Driver portal: mobile first, scoped independently of the operator/admin UI. */
+.driver-shell { background: #f3f6f4; color: #183d36; min-height: 100dvh; padding: 1rem; }
+.driver-shell main { max-width: 42rem; margin: auto; padding: 0; }
+.driver-shell h1 { font-size: clamp(1.8rem, 6vw, 2.5rem); margin: .5rem 0; }
+.driver-shell h2 { font-size: 1.3rem; }
+.driver-shell h3 { font-size: 1.4rem; margin: .5rem 0; }
+.driver-shell aside, .driver-card { background: white; border: 1px solid #cbdad1; border-radius: 1rem; padding: 1.2rem; margin: 1rem 0; overflow-wrap: anywhere; }
+.driver-shell aside { background: #fff7da; border-color: #e7d690; }
+.driver-shell p { line-height: 1.55; }
+.driver-eyebrow { font-size: .8rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; }
+.driver-shell nav { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; margin: 1.25rem 0; }
+.driver-shell a { color: #155b4c; text-underline-offset: .2em; }
+.driver-shell a[aria-current=page] { font-weight: 800; }
+.driver-shell button, .driver-shell summary { min-height: 48px; cursor: pointer; touch-action: manipulation; }
+.driver-shell button { background: #175543; color: white; border: 0; border-radius: .6rem; padding: .8rem 1rem; font: inherit; }
+.driver-shell button:disabled { opacity: .6; }
+.driver-actions { margin-top: 1rem; display: grid; gap: .7rem; }
+.driver-actions button { width: 100%; }
+.driver-actions fieldset { padding: 0; border: 0; margin: 0; }
+.driver-shell dt { font-size: .85rem; margin-top: .8rem; color: #4d645b; }
+.driver-shell dd { margin: .25rem 0; }
+.driver-shell :focus-visible { outline: 3px solid #bb6e00; outline-offset: 4px; }
+.driver-shell [role=alert] { color: #922923; }
