@@ -8,7 +8,7 @@ export const dispatchInput = z.discriminatedUnion("mode", [
   z.object({ mode: z.literal("MANUAL"), expectedVersion: z.number().int().min(0), idempotencyKey: z.string().uuid(), driverId: z.string().min(1).max(100), vehicleId: z.string().min(1).max(100), reason: z.string().trim().min(5).max(500) }).strict(),
 ]);
 export function assertDispatchable(status: string) {
-  if (status !== "CONFIRMED" && status !== "ASSIGNED") throw new DispatchError("Esta reserva não permite distribuição.");
+  if (status !== "CONFIRMED" && status !== "ASSIGNED" && status !== "DRIVER_DECLINED") throw new DispatchError("Esta reserva não permite distribuição.");
 }
 export const weights = { availability: 25, proximity: 20, fairness: 20, vehicleFit: 15, rating: 10, language: 5, acceptance: 5 } as const;
 export type DriverCandidate = { id: string; assignments: number };

@@ -60,3 +60,6 @@ BookingStatus acrescenta ASSIGNED, também usado no BookingEvent. DispatchDecisi
 
 ## Projeções 08
 Sem novas tabelas, enum, migration ou alteração de dados persistidos. Consultas compõem Booking/Customer/Occupancy/DispatchDecision/DriverAvailability e estado documental existente. Indicadores usam intervalos locais semiabertos e última decisão por versão; relatórios agrupam saída no fuso, excluem canceladas dos valores e mantêm cêntimos bigint. Customer continua snapshot por reserva. Ver [Sprint 08](SPRINT_08.md).
+
+## Modelo físico 09
+Driver.userId opcional com FK User e unique(organizationId,userId). DriverAction preserva organização/reserva/motorista/ator, chave/hash, versão, tipo e data, com FKs compostas de tenant para reserva/motorista, unicidade por organização/chave e CHECK versão positiva. BookingStatus/BookingEvent recebem DRIVER_ACCEPTED, DRIVER_DECLINED, ARRIVED, IN_PROGRESS, COMPLETED. Ocupações e decisões anteriores preservadas. Sem dados de localização, notificações ou armazenamento offline. Ver [Sprint 09](SPRINT_09.md).

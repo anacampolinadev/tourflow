@@ -4,7 +4,7 @@ import { availabilityInput } from "@/modules/availability";
 export class BookingError extends Error {
   constructor(message: string) { super(message); this.name = "BookingError"; }
 }
-export const bookingListInput = z.object({ date: availabilityInput.shape.date.optional(), search: z.string().trim().max(120).default(""), status: z.enum(["ALL", "CONFIRMED", "ASSIGNED", "CANCELLED"]).default("ALL") }).strict();
+export const bookingListInput = z.object({ date: availabilityInput.shape.date.optional(), search: z.string().trim().max(120).default(""), status: z.enum(["ALL", "PENDING_ASSIGNMENT", "ASSIGNED_GROUP", "CONFIRMED", "ASSIGNED", "DRIVER_ACCEPTED", "DRIVER_DECLINED", "ARRIVED", "IN_PROGRESS", "COMPLETED", "CANCELLED"]).default("ALL") }).strict();
 export const bookingInput = availabilityInput.extend({
   idempotencyKey: z.string().uuid(),
   customerName: z.string().trim().min(2).max(120),
@@ -20,7 +20,7 @@ export function bookingPrice(pricingType: "PER_PERSON" | "PER_GROUP", unitPriceC
   return total;
 }
 export function assertCancellable(status: string) {
-  if (status !== "CONFIRMED" && status !== "ASSIGNED" && status !== "CANCELLED") throw new BookingError("Esta reserva não pode ser cancelada neste estado.");
+  if (status !== "CONFIRMED" && status !== "ASSIGNED" && status !== "DRIVER_ACCEPTED" && status !== "DRIVER_DECLINED" && status !== "ARRIVED" && status !== "CANCELLED") throw new BookingError("Esta reserva não pode ser cancelada neste estado.");
 }
 
-export const bookingLabels = { CONFIRMED: "Confirmada em teste", ASSIGNED: "Atribuída em teste", CANCELLED: "Cancelada" };
+export const bookingLabels = { CONFIRMED: "Confirmada em teste", ASSIGNED: "Atribuída em teste", DRIVER_ACCEPTED: "Aceite em teste", DRIVER_DECLINED: "Recusada — redistribuir", ARRIVED: "No encontro em teste", IN_PROGRESS: "Em curso em teste", COMPLETED: "Concluída em teste", CANCELLED: "Cancelada" };

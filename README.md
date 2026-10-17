@@ -58,3 +58,6 @@ Na reserva, abra Ver distribuição. Owner/dispatcher podem distribuir automatic
 
 ## Painel do operador
 Abra a organização para consultar o dia, as pendências e a próxima saída. Use data e Atualizar dados para rever a operação; pendências abrem reservas filtradas. Menu comum inclui Clientes (contactos de reservas, sem deduplicação), Relatórios (até 31 dias por saída no fuso local, sem receita recebida) e Configurações em leitura. Motoristas com janela não significa elegibilidade para um serviço. Todos os indicadores continuam de teste; documentação detalhada é acessível apenas ao responsável.
+
+### Sprint 09 — Motorista
+Portal/PWA privado em /driver/[organizationId]. Responsável ativa o acesso no cadastro do motorista; contacto não concede acesso por si só. Aceite/recusa/chegada/início/conclusão de teste, histórico, redistribuição após recusa e manifesto de instalação. Sem notificações, GPS ou operações offline. Ver [contratos e limites](docs/SPRINT_09.md). A mesma base PostgreSQL/SMTP e comandos de teste anteriores continuam; não há variável ou dependência nova.

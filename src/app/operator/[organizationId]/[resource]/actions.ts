@@ -5,11 +5,11 @@ import { ZodError } from "zod";
 import { CatalogConflict, CatalogUnavailable } from "@/modules/tenants";
 import { createService, updateService, servicePriceToCents } from "@/modules/services";
 import { createVehicle, updateVehicle } from "@/modules/vehicles";
-import { createDriver, updateDriver, changeDriverStatus, InvalidDriverTransition } from "@/modules/drivers";
+import { createDriver, updateDriver, changeDriverStatus, InvalidDriverTransition, enableDriverAccount, DriverPortalError } from "@/modules/drivers";
 import { currentTenant, requirePermission } from "@/modules/auth";
 import type { ResourceKind, ResourceFormState } from "@/types/operator-core";
 function message(error: unknown): ResourceFormState {
-  if (error instanceof CatalogConflict || error instanceof CatalogUnavailable || error instanceof InvalidDriverTransition) return { error: error.message };
+  if (error instanceof DriverPortalError || error instanceof CatalogConflict || error instanceof CatalogUnavailable || error instanceof InvalidDriverTransition) return { error: error.message };
   if (error instanceof ZodError) return { error: "Verifique os campos, os limites e os idiomas. Se permitir recolha, indique as regras." };
   return { error: "Não foi possível guardar. Verifique o seu acesso e os dados, ou atualize a página." };
 }
@@ -51,4 +51,11 @@ export async function saveDriverStatus(organizationId: string, id: string, versi
   try { await changeDriverStatus(organizationId, id, version, form.get("status")); } catch (error) { return message(error); }
   refresh(organizationId, "drivers", id);
   redirect(`/operator/${organizationId}/drivers/${id}?saved=1`);
+}
+
+export async function enableDriverAccess(organizationId: string, driverId: string, version: number, _state: ResourceFormState, _form: FormData): Promise<ResourceFormState> {
+  void _state; void _form;
+  try { await enableDriverAccount(organizationId, driverId, version); } catch (error) { return message(error); }
+  refresh(organizationId, "drivers", driverId);
+  redirect(`/operator/${organizationId}/drivers/${driverId}?saved=1`);
 }

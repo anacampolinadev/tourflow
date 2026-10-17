@@ -53,6 +53,8 @@ model User {
   documentReviews ComplianceReview[]
   operatorApprovals OperatorProfile[] @relation("OperatorApprover")
   dispatchDecisions DispatchDecision[]
+  driverAccounts Driver[]
+  driverActions DriverAction[]
 }
 
 model Account {
@@ -294,6 +296,10 @@ model Vehicle {
   @@index([organizationId, active, name])
 }
 model Driver {
+  userId String?
+  user User? @relation(fields: [userId], references: [id], onDelete: Restrict)
+  actions DriverAction[]
+  @@unique([organizationId, userId])
   id String @id @default(cuid())
   organizationId String
   name String
@@ -372,6 +378,11 @@ model ResourceBlock {
 }
 
 enum BookingStatus {
+  DRIVER_ACCEPTED
+  DRIVER_DECLINED
+  ARRIVED
+  IN_PROGRESS
+  COMPLETED
   ASSIGNED
   CONFIRMED
   CANCELLED
@@ -419,6 +430,7 @@ model Booking {
   service Service @relation(fields: [serviceId, organizationId], references: [id, organizationId], onDelete: Restrict)
   customer Customer @relation(fields: [customerId, organizationId], references: [id, organizationId], onDelete: Restrict)
   occupancy BookingOccupancy?
+  driverActions DriverAction[]
   events BookingEvent[]
   dispatchDecisions DispatchDecision[]
   @@unique([id, organizationId])
@@ -480,4 +492,29 @@ model DispatchDecision {
   vehicle Vehicle? @relation(fields: [vehicleId, organizationId], references: [id, organizationId], onDelete: Restrict)
   @@unique([organizationId, idempotencyKey])
   @@index([organizationId, bookingId, createdAt])
+}
+
+enum DriverActionType {
+  ACCEPT
+  DECLINE
+  ARRIVE
+  START
+  COMPLETE
+}
+model DriverAction {
+  id String @id @default(cuid())
+  organizationId String
+  bookingId String
+  driverId String
+  actorId String
+  idempotencyKey String
+  requestHash String
+  bookingVersion Int
+  type DriverActionType
+  createdAt DateTime @default(now())
+  booking Booking @relation(fields: [bookingId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  driver Driver @relation(fields: [driverId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  actor User @relation(fields: [actorId], references: [id], onDelete: Restrict)
+  @@unique([organizationId, idempotencyKey])
+  @@index([organizationId, bookingId, type])
 }

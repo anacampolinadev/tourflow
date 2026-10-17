@@ -24,10 +24,12 @@ async function candidates(tx: Prisma.TransactionClient, organizationId: string, 
   const from = new Date(booking.startsAt.valueOf() - 30 * 86400000), until = new Date(booking.startsAt.valueOf() + 86400000);
   const [vehicles, workload] = await Promise.all([
     tx.vehicle.findMany({ where: { organizationId, id: { in: availability.eligibleVehicles.map((row) => row.id) } }, select: { id: true, capacity: true }, orderBy: { id: "asc" } }),
-    tx.bookingOccupancy.groupBy({ by: ["driverId"], where: { organizationId, bookingId: { not: booking.id }, releasedAt: null, booking: { status: "ASSIGNED", startsAt: { gte: from, lt: until } } }, _count: { _all: true } }),
+    tx.bookingOccupancy.groupBy({ by: ["driverId"], where: { organizationId, bookingId: { not: booking.id }, releasedAt: null, booking: { status: { in: ["ASSIGNED", "DRIVER_ACCEPTED", "ARRIVED", "IN_PROGRESS", "COMPLETED"] }, startsAt: { gte: from, lt: until } } }, _count: { _all: true } }),
   ]);
   const counts = new Map(workload.map((row) => [row.driverId, row._count._all]));
-  const drivers = availability.eligibleDrivers.map((driver) => ({ ...driver, assignments: counts.get(driver.id) ?? 0 }));
+  const declined = await tx.driverAction.findMany({ where: { organizationId, bookingId: booking.id, type: "DECLINE" }, select: { driverId: true } });
+  const excluded = new Set(declined.map((row) => row.driverId));
+  const drivers = availability.eligibleDrivers.filter((driver) => !excluded.has(driver.id)).map((driver) => ({ ...driver, assignments: counts.get(driver.id) ?? 0 }));
   const ranking = rankCandidates(drivers, vehicles, booking.passengers, Boolean(booking.language));
   return { availability, vehicles, drivers, ranking, from, until };
 }
@@ -54,7 +56,7 @@ export async function dispatchBooking(organizationId: string, bookingId: string,
       selected = scoreCandidate(driver, vehicle, booking.passengers, Boolean(booking.language));
     }
     const outcome = selected ? "ASSIGNED" : "NO_CANDIDATE";
-    const reason = selected ? input.mode === "MANUAL" ? input.reason : `Maior pontuação elegível; ${selected.assignments} atribuições na janela de carga e ${selected.capacity - booking.passengers} lugares livres. Desempate por carga e identificadores.` : availabilityReasons[snapshot.availability.reason];
+    const reason = selected ? input.mode === "MANUAL" ? input.reason : `Maior pontuação elegível; ${selected.assignments} atribuições na janela de carga e ${selected.capacity - booking.passengers} lugares livres. Desempate por carga e identificadores.` : snapshot.availability.available ? "Os motoristas elegíveis recusaram este serviço. Reveja recursos ou cancele a reserva." : availabilityReasons[snapshot.availability.reason];
     const version = booking.version + 1;
     if (selected) {
       await tx.bookingOccupancy.update({ where: { bookingId, organizationId: context.organizationId }, data: { driverId: selected.driverId, vehicleId: selected.vehicleId } });

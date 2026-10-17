@@ -76,7 +76,7 @@ test("operator dashboard connects daily actions, filtered reservations, customer
   await page.setViewportSize({ width: 390, height: 844 }); expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
   await page.screenshot({ path: "test-results/dashboard-mobile.png", fullPage: true, caret: "initial" });
   await page.getByRole("link", { name: "Abrir reservas para distribuir", exact: true }).click();
-  await expect(page.getByLabel("Data de saída")).toHaveValue(date); await expect(page.getByLabel("Estado da reserva")).toHaveValue("CONFIRMED");
+  await expect(page.getByLabel("Data de saída")).toHaveValue(date); await expect(page.getByLabel("Estado da reserva")).toHaveValue("PENDING_ASSIGNMENT");
   await expect(page.getByRole("article")).toHaveCount(1); await expect(page.getByRole("article")).toContainText("Mariana Teste");
   await page.getByRole("navigation", { name: "Navegação do operador" }).getByRole("link", { name: "Clientes", exact: true }).click();
   await page.getByLabel("Pesquisar nome, e-mail ou telefone").fill("Mariana"); await page.getByRole("button", { name: "Pesquisar clientes", exact: true }).click();
