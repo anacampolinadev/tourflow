@@ -135,10 +135,10 @@ test("owner creates and edits services, vehicles and drivers without publishing"
   expect((await db.operatorProfile.findUniqueOrThrow({ where: { organizationId } })).status).toBe("ONBOARDING");
   await page.goto(`/operator/${organizationId}/drivers`);
   await expect(page.getByRole("link", { name: "João Motorista", exact: true })).toBeVisible();
-  await page.screenshot({ path: "test-results/operator-core.png", fullPage: true });
+  await page.screenshot({ path: "test-results/operator-core.png", fullPage: true, caret: "initial" });
   await page.setViewportSize({ width: 390, height: 844 });
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
-  await page.screenshot({ path: "test-results/operator-core-mobile.png", fullPage: true });
+  await page.screenshot({ path: "test-results/operator-core-mobile.png", fullPage: true, caret: "initial" });
   expect(pageErrors).toEqual([]);
 });
 

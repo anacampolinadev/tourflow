@@ -116,6 +116,6 @@ test("private uploads, correction, version history and explicit human approval",
   expect(profile.approvedAt).not.toBeNull();
   expect(profile.approvedById).not.toBeNull();
   expect(await admin.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(admin.viewportSize()?.width ?? 1280);
-  await admin.screenshot({ path: "test-results/compliance-approved.png", fullPage: true });
+  await admin.screenshot({ path: "test-results/compliance-approved.png", fullPage: true, caret: "initial" });
   await ownerContext.close();
 });

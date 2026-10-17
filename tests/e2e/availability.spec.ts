@@ -97,10 +97,10 @@ test("owner builds the agenda, checks real free resources and resolves a blocked
   await query(page); await expect(page.locator(".calendar-result").getByRole("status")).toHaveText("Há recursos livres na agenda.");
   for (const summary of await page.locator("details[open] > summary").all()) await summary.click();
   expect((await db.operatorProfile.findUniqueOrThrow({ where: { organizationId: org } })).status).toBe("ONBOARDING");
-  await page.screenshot({ path: "test-results/availability.png", fullPage: true });
+  await page.screenshot({ path: "test-results/availability.png", fullPage: true, caret: "initial" });
   await page.setViewportSize({ width: 390, height: 844 });
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
-  await page.screenshot({ path: "test-results/availability-mobile.png", fullPage: true }); expect(errors).toEqual([]);
+  await page.screenshot({ path: "test-results/availability-mobile.png", fullPage: true, caret: "initial" }); expect(errors).toEqual([]);
 });
 
 test("viewer can query, dispatcher manages resource blocks and other tenants stay private", async ({ page, browser }) => {

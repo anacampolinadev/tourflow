@@ -1,11 +1,12 @@
 import "server-only";
 import { createHash } from "node:crypto";
 import { getDb } from "@/lib/db";
+import type { Prisma } from "@/generated/prisma/client";
 import { currentTenant, requirePermission } from "@/modules/auth";
-import { availabilityInTransaction, availabilityReasons } from "@/modules/availability";
+import { availabilityInTransaction, availabilityReasons, dayInterval } from "@/modules/availability";
 import { assertSandboxBookingApproval } from "@/modules/compliance";
 import { recordVersion } from "@/modules/tenants";
-import { BookingError, assertCancellable, bookingInput, bookingPrice } from "./domain";
+import { BookingError, assertCancellable, bookingInput, bookingListInput, bookingPrice } from "./domain";
 
 export async function createBooking(organizationId: string, raw: unknown) {
   const context = await currentTenant(organizationId); requirePermission(context, "operations:manage");
@@ -63,12 +64,15 @@ export async function cancelBooking(organizationId: string, bookingId: string, v
   }, { isolationLevel: "ReadCommitted" });
 }
 
-export async function readBookings(organizationId: string, page = 1) {
+export async function readBookings(organizationId: string, page = 1, raw: unknown = {}) {
   const context = await currentTenant(organizationId); requirePermission(context, "organization:read");
   const index = recordVersion.min(1).max(10000).parse(page);
-  const [organization, bookings] = await Promise.all([
-    getDb().organization.findUniqueOrThrow({ where: { id: context.organizationId }, select: { id: true, name: true, timeZone: true, services: { where: { active: true }, select: { id: true, name: true, basePriceCents: true, currency: true, pricingType: true }, orderBy: { name: "asc" } } } }),
-    getDb().booking.findMany({ where: { organizationId: context.organizationId }, include: { customer: true, occupancy: { include: { driver: { select: { name: true } }, vehicle: { select: { name: true } } } }, events: { orderBy: { createdAt: "asc" } } }, orderBy: [{ createdAt: "desc" }, { id: "desc" }], take: 21, skip: (index - 1) * 20 }),
-  ]);
-  return { organization, context, bookings: bookings.slice(0, 20), hasNext: bookings.length > 20, page: index };
+  const filters = bookingListInput.parse(raw);
+  return getDb().$transaction(async (tx) => {
+    const organization = await tx.organization.findUniqueOrThrow({ where: { id: context.organizationId }, select: { id: true, name: true, timeZone: true, services: { where: { active: true }, select: { id: true, name: true, basePriceCents: true, currency: true, pricingType: true }, orderBy: { name: "asc" } } } });
+    const interval = filters.date ? dayInterval(filters.date, organization.timeZone) : null;
+    const where: Prisma.BookingWhereInput = { organizationId: context.organizationId, ...(interval ? { startsAt: { gte: interval.startsAt, lt: interval.endsAt } } : {}), ...(filters.status !== "ALL" ? { status: filters.status } : {}), ...(filters.search ? { OR: [{ id: filters.search }, { serviceName: { contains: filters.search, mode: "insensitive" } }, { customer: { name: { contains: filters.search, mode: "insensitive" } } }, { customer: { email: { contains: filters.search, mode: "insensitive" } } }] } : {}) };
+    const bookings = await tx.booking.findMany({ where, include: { customer: true, occupancy: { include: { driver: { select: { name: true } }, vehicle: { select: { name: true } } } }, events: { orderBy: { createdAt: "asc" } } }, orderBy: filters.date ? [{ startsAt: "asc" }, { id: "asc" }] : [{ createdAt: "desc" }, { id: "desc" }], take: 21, skip: (index - 1) * 20 });
+    return { organization, context, filters, bookings: bookings.slice(0, 20), hasNext: bookings.length > 20, page: index };
+  }, { isolationLevel: "RepeatableRead" });
 }

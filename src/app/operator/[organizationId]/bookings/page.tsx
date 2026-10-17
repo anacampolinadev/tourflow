@@ -2,25 +2,30 @@ import { randomUUID } from "node:crypto";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { AccessDenied, currentActor } from "@/modules/auth";
-import { readBookings, bookingLabels } from "@/modules/bookings";
+import { readBookings, bookingLabels, bookingListInput } from "@/modules/bookings";
 import { localLabel } from "@/modules/availability";
 import { ResourceForm } from "@/components/resource-form";
 import { bookingAction, cancelAction } from "./actions";
 export const dynamic = "force-dynamic";
 const money = (amount: number, currency: string) => new Intl.NumberFormat("pt-PT", { style: "currency", currency }).format(amount / 100);
 
-export default async function Bookings({ params, searchParams }: { params: Promise<{ organizationId: string }>; searchParams: Promise<{ page?: string; saved?: string }> }) {
+export default async function Bookings({ params, searchParams }: { params: Promise<{ organizationId: string }>; searchParams: Promise<{ page?: string; saved?: string; date?: string; status?: string; search?: string; new?: string }> }) {
   if (!(await currentActor())?.active) redirect("/login");
   const { organizationId } = await params, query = await searchParams;
   const page = Number(query.page ?? "1");
   if (!Number.isInteger(page) || page < 1 || page > 10000) notFound();
-  const data = await readBookings(organizationId, page).catch((error: unknown) => { if (error instanceof AccessDenied) notFound(); throw error; });
+  const parsed = bookingListInput.safeParse({ ...(query.date ? { date: query.date } : {}), status: query.status ?? "ALL", search: query.search ?? "" });
+  const filters = parsed.success ? parsed.data : bookingListInput.parse({});
+  const pageHref = (index: number) => `?${new URLSearchParams({ ...(filters.date ? { date: filters.date } : {}), status: filters.status, search: filters.search, page: String(index) })}`;
+  const data = await readBookings(organizationId, page, filters).catch((error: unknown) => { if (error instanceof AccessDenied) notFound(); throw error; });
   const canManage = ["OPERATOR_OWNER", "OPERATOR_DISPATCHER"].includes(data.context.role);
   return <main className="operator-catalog"><Link href={`/operator/${organizationId}`}>Operador</Link>
     <h1>Reservas</h1><p>{data.organization.name} · {data.organization.timeZone}</p>
     <p role="note">Ambiente de teste interno. Estas reservas ocupam a agenda de teste; não representam vendas nem autorizam operação pública. É necessária aprovação documental válida. Cada reserva ocupa um veículo e um motorista para todo o grupo. A atribuição de recursos é gerida na distribuição interna.</p>
     {query.saved === "1" ? <p role="status">Reserva guardada.</p> : null}
-    {canManage ? <details><summary>Nova reserva de teste</summary><p>O preço é calculado pelo serviço ao confirmar. Sem cobrança.</p>
+    {!parsed.success ? <p role="alert">Filtros inválidos. Mostramos as reservas sem filtros.</p> : null}
+    <form className="filters"><div><label htmlFor="booking-search">Pesquisar reservas</label><input id="booking-search" name="search" defaultValue={filters.search} maxLength={120} /></div><div><label htmlFor="booking-date">Data de saída</label><input id="booking-date" name="date" type="date" defaultValue={filters.date ?? ""} /></div><div><label htmlFor="booking-status">Estado da reserva</label><select id="booking-status" name="status" defaultValue={filters.status}><option value="ALL">Todas</option><option value="CONFIRMED">Aguardam atribuição</option><option value="ASSIGNED">Atribuídas em teste</option><option value="CANCELLED">Canceladas</option></select></div><button>Filtrar reservas</button><Link href={`/operator/${organizationId}/bookings`}>Limpar filtros</Link></form>
+    {canManage ? <details open={query.new === "1"}><summary>Nova reserva de teste</summary><p>O preço é calculado pelo serviço ao confirmar. Sem cobrança.</p>
       <ResourceForm preserveOnError label="Confirmar reserva de teste" action={bookingAction.bind(null, organizationId, randomUUID())} fields={[
         { name: "serviceId", label: "Serviço", type: "select", value: "", options: [{ value: "", label: "Selecione um serviço" }, ...data.organization.services.map((service) => ({ value: service.id, label: `${service.name} · ${money(service.basePriceCents, service.currency)} ${service.pricingType === "PER_PERSON" ? "por pessoa" : "por grupo"}` }))] },
         { name: "date", label: "Data", type: "date", value: "", required: true },
@@ -46,6 +51,6 @@ export default async function Bookings({ params, searchParams }: { params: Promi
       <details><summary>Eventos da reserva</summary><ul>{booking.events.map((event) => <li key={event.id}>{bookingLabels[event.type]} · {localLabel(event.createdAt, booking.timeZone).replace("T", " ")}</li>)}</ul></details>
       {canManage && booking.status !== "CANCELLED" ? <ResourceForm fields={[]} label="Cancelar reserva" action={cancelAction.bind(null, organizationId, booking.id, booking.version)} /> : null}
     </article>)}
-    <nav aria-label="Páginas de reservas">{page > 1 ? <Link href={`?page=${page - 1}`}>Anterior</Link> : null} <span>Página {page}</span> {data.hasNext ? <Link href={`?page=${page + 1}`}>Seguinte</Link> : null}</nav>
+    <nav aria-label="Páginas de reservas">{page > 1 ? <Link href={pageHref(page - 1)}>Anterior</Link> : null} <span>Página {page}</span> {data.hasNext ? <Link href={pageHref(page + 1)}>Seguinte</Link> : null}</nav>
   </main>;
 }

@@ -1,6 +1,6 @@
 # TourFlow — instruções para agentes
 
-Leia primeiro docs/CODEX_RULES.md, docs/PRODUCT.md e docs/ARCHITECTURE.md. Consulte docs/DATA_MODEL.md quando a tarefa envolver persistência. Sprints 01–07 validados em PRs empilhados. Última entrega: Sprint 07 — Fair Dispatch v1 interno. Não avançar ao Sprint 08 sem novo pedido. Consulte docs/SPRINT_07.md e as evidências anteriores.
+Leia primeiro docs/CODEX_RULES.md, docs/PRODUCT.md e docs/ARCHITECTURE.md. Consulte docs/DATA_MODEL.md quando a tarefa envolver persistência. Sprints 01–08 validados em PRs empilhados. Última entrega: Sprint 08 — Painel do operador. Não avançar ao Sprint 09 sem novo pedido. Consulte docs/SPRINT_08.md e as evidências anteriores.
 
 <!-- BEGIN:nextjs-agent-rules -->
 

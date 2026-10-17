@@ -4,6 +4,7 @@ import { availabilityInput } from "@/modules/availability";
 export class BookingError extends Error {
   constructor(message: string) { super(message); this.name = "BookingError"; }
 }
+export const bookingListInput = z.object({ date: availabilityInput.shape.date.optional(), search: z.string().trim().max(120).default(""), status: z.enum(["ALL", "CONFIRMED", "ASSIGNED", "CANCELLED"]).default("ALL") }).strict();
 export const bookingInput = availabilityInput.extend({
   idempotencyKey: z.string().uuid(),
   customerName: z.string().trim().min(2).max(120),
