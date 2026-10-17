@@ -62,3 +62,6 @@ Módulo assistants expõe initializeAssistant/updateAssistant/readAssistant; dom
 
 ## Alana Tools — Sprint 12
 assistants/tools.ts compõe contratos públicos de services/availability/bookings na mesma transação sob root lock. tools-domain.ts define whitelist/DTOs/entradas estritas. Sessões vinculam tenant/autor/versão/TTL; escritas com chave/hash e grant de consulta próprio. Booking expõe caso de uso transacional compartilhado e recibo mínimo; não há endpoint de banco ou inferência. Playbook alana-tools-1 exige atualização explícita de versões antigas. Ver [Sprint 12](SPRINT_12.md).
+
+## Sandbox/QA — Sprint 13
+Novo módulo qa compõe APIs transacionais públicas de assistants. Probes reais e audit temporário são sempre revertidos; segunda transação persiste relatório somente se identidade, gates e hash de configuração se mantiverem. Snapshot privado, evidência limitada e freshness de até 24h. UI owner/admin separada e revisões humanas imutáveis; nenhum endpoint público ou modelo inferido. Ver [Sprint 13](SPRINT_13.md).

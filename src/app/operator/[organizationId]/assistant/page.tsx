@@ -30,6 +30,7 @@ export default async function AssistantPage({ params, searchParams }: { params: 
   return <main className="operator-catalog narrow"><Link href={`/operator/${organizationId}/settings`}>Configurações</Link><h1>Assistente Alana</h1>
     <p className="sandbox-note">Preparação em SANDBOX. Ainda sem conversas com turistas ou canais ligados. Ferramentas disponíveis apenas no painel de testes. Guardar uma versão não ativa a assistente nem publica o operador.</p>
     <p><Link href={`/operator/${organizationId}/assistant/tools`}>Abrir ferramentas de teste da Alana</Link></p>
+    <p><Link href={`/operator/${organizationId}/qa`}>Qualidade e testes do operador</Link></p>
     {search.saved === "1" ? <p role="status">Configuração da assistente guardada.</p> : null}
     {!data ? <><h2>Preparar assistente</h2><p>Cria a configuração inicial, com regras centrais da Alana e nome personalizável. Exige aprovação documental válida.</p><ResourceForm fields={[]} label="Preparar assistente de teste" action={initializeAssistantAction.bind(null, organizationId)} /></> : selected ? <>
       <h2>{historical ? "Consultar versão anterior" : "Configuração atual"} · versão {selected.version}</h2>

@@ -50,3 +50,6 @@ Configuração privada e versões da assistente por operador: nome, tom, idiomas
 
 ## Sprint 12 — Alana Tools
 Seis ferramentas de servidor em sessões privadas de teste: catálogo/detalhes, disponibilidade, criar/consultar reserva própria e registar ajuda humana. Preço e ocupação calculados pelo backend; fila interna sem mensagens enviadas. Painel manual, sem modelo ou canal de turistas. Ver [contratos e limites](SPRINT_12.md).
+
+## Sprint 13 — Sandbox/QA
+Bateria por operador com 33 verificações internas e uma pendência explícita de conversação. Testa ferramentas reais em rollback, guarda relatório privado e revisões humanas de falha/impedimento. Dados fictícios não ficam na operação. A primeira execução entra em SANDBOX; conversas, validação do cliente e produção continuam bloqueadas. Ver [contratos e limites](SPRINT_13.md).

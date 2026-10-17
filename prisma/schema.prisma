@@ -55,6 +55,8 @@ model User {
   dispatchDecisions DispatchDecision[]
   driverAccounts Driver[]
   driverActions DriverAction[]
+  qaRuns QaRun[]
+  qaReviews QaManualCheck[]
   assistantConversations AssistantConversation[]
 }
 
@@ -107,6 +109,7 @@ model Organization {
   updatedAt DateTime @updatedAt
   brand BrandProfile?
   assistant AssistantProfile?
+  qaRuns QaRun[]
   members OrganizationMember[]
   operator OperatorProfile?
   auditLogs AuditLog[]
@@ -597,4 +600,36 @@ model AssistantHandoff {
   conversation AssistantConversation @relation(fields: [conversationId, organizationId], references: [id, organizationId], onDelete: Restrict)
   @@unique([conversationId, organizationId])
   @@index([organizationId, createdAt])
+}
+
+model QaRun {
+  id String @id @default(cuid())
+  organizationId String
+  actorId String
+  suiteVersion String
+  snapshotHash String
+  checks Json
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  actor User @relation(fields: [actorId], references: [id], onDelete: Restrict)
+  reviews QaManualCheck[]
+  @@unique([id, organizationId])
+  @@index([organizationId, createdAt])
+}
+
+model QaManualCheck {
+  id String @id @default(cuid())
+  organizationId String
+  runId String
+  scenario String
+  revision Int
+  decision String
+  note String @db.Text
+  reviewerId String
+  createdAt DateTime @default(now())
+  run QaRun @relation(fields: [runId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  reviewer User @relation(fields: [reviewerId], references: [id], onDelete: Restrict)
+  @@unique([runId, scenario, revision])
+  @@index([organizationId, runId, createdAt])
 }

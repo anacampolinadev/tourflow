@@ -7,6 +7,7 @@ const transitions: Partial<Record<OperatorStatus, readonly OperatorStatus[]>> = 
   LEAD: ["CONTRACTED", "SUSPENDED"],
   CONTRACTED: ["ONBOARDING", "SUSPENDED"],
   ONBOARDING: ["SUSPENDED"],
+  SANDBOX: ["SUSPENDED"],
 };
 
 export class InvalidTransition extends Error {
