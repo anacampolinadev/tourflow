@@ -61,3 +61,6 @@ Abra a organização para consultar o dia, as pendências e a próxima saída. U
 
 ### Sprint 09 — Motorista
 Portal/PWA privado em /driver/[organizationId]. Responsável ativa o acesso no cadastro do motorista; contacto não concede acesso por si só. Aceite/recusa/chegada/início/conclusão de teste, histórico, redistribuição após recusa e manifesto de instalação. Sem notificações, GPS ou operações offline. Ver [contratos e limites](docs/SPRINT_09.md). A mesma base PostgreSQL/SMTP e comandos de teste anteriores continuam; não há variável ou dependência nova.
+
+### Sprint 10 — White-label
+Em Configurações → Identidade da marca, o responsável gera a configuração de teste após aprovação documental e define nome, cores e PNG. Identidade aplicada por organização ao painel e ao portal/PWA do motorista, com ícones privados e contraste legível. Geração repetível sem duplicar dados; não publica nem altera produção. Ver [contratos e limites](docs/SPRINT_10.md). Sem variável de ambiente nova; sharp 0.35.5 passa a dependência explícita para normalizar imagens.

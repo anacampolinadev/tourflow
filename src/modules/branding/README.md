@@ -1,0 +1,2 @@
+# Branding
+Sprint 10: identidade visual por organização e factory interna de configuração. domain.ts valida nome/cores e contraste; images.ts normaliza PNG e cria ícones; service.ts autoriza e persiste com lock da raiz, versão e auditoria. API pública em index.ts. Depende apenas das APIs públicas de auth/compliance/tenants e da infraestrutura DB. Não publica, não duplica cadastros e não configura Alana/domínios. Ver docs/SPRINT_10.md.

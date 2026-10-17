@@ -63,3 +63,6 @@ Sem novas tabelas, enum, migration ou alteração de dados persistidos. Consulta
 
 ## Modelo físico 09
 Driver.userId opcional com FK User e unique(organizationId,userId). DriverAction preserva organização/reserva/motorista/ator, chave/hash, versão, tipo e data, com FKs compostas de tenant para reserva/motorista, unicidade por organização/chave e CHECK versão positiva. BookingStatus/BookingEvent recebem DRIVER_ACCEPTED, DRIVER_DECLINED, ARRIVED, IN_PROGRESS, COMPLETED. Ocupações e decisões anteriores preservadas. Sem dados de localização, notificações ou armazenamento offline. Ver [Sprint 09](SPRINT_09.md).
+
+## Modelo físico 10
+BrandProfile tem organizationId como PK/FK Organization RESTRICT, nome/cores, logo opcional/hasLogo, ícones PNG192/512, versão e timestamps. CHECKs de identidade e limites/coerência dos bytes; seleção mínima de campos nas consultas de identidade. Atualização compare-and-swap e auditoria no lock da raiz; geração idempotente por organização. Não modifica status/version de OperatorProfile, identidade User ou snapshots de reserva. Ver [Sprint 10](SPRINT_10.md).

@@ -146,3 +146,16 @@ summary { cursor: pointer; padding: .5rem 0; }
 .driver-shell dd { margin: .25rem 0; }
 .driver-shell :focus-visible { outline: 3px solid #bb6e00; outline-offset: 4px; }
 .driver-shell [role=alert] { color: #922923; }
+
+/* Validated tenant colours are scoped to the current authenticated workspace. */
+.brand-mark { display: inline-flex; gap: .75rem; align-items: center; overflow-wrap: anywhere; min-width: 0; }
+.brand-mark img { object-fit: contain; flex: 0 0 48px; }
+.driver-brand { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; margin: 1rem 0; font-weight: 700; }
+.brand-themed a { color: var(--brand-link); }
+.brand-themed button, .brand-themed .button { background: var(--brand-primary); color: var(--brand-on-primary); border: 1px solid currentColor; }
+.operator-shell.brand-themed .operator-brand { color: var(--brand-link); }
+.operator-shell.brand-themed .operator-navigation a[aria-current=page] { background: var(--brand-secondary); color: var(--brand-on-secondary); box-shadow: inset 3px 0 var(--brand-primary); }
+.operator-shell.brand-themed .dashboard-next { background: var(--brand-primary); color: var(--brand-on-primary); }
+.operator-shell.brand-themed .dashboard-next a, .operator-shell.brand-themed .dashboard-next .eyebrow { color: var(--brand-on-primary); }
+.brand-themed .brand-preview { background: var(--brand-secondary); color: var(--brand-on-secondary); padding: 1rem; border-radius: .75rem; margin: 1rem 0; }
+.driver-shell .brand-themed .driver-brand { padding: .8rem; background: var(--brand-secondary); color: var(--brand-on-secondary); border-radius: .6rem; }

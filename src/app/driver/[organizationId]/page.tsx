@@ -1,3 +1,5 @@
+import type { Metadata, Viewport } from "next";
+import { BrandMark, brandStyle, readPageBrand } from "@/components/brand-identity";
 import { randomUUID } from "node:crypto";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
@@ -10,6 +12,15 @@ import { DriverConnectivity } from "@/components/driver-connectivity";
 import { driverAction } from "./actions";
 export const dynamic = "force-dynamic";
 
+export async function generateMetadata({ params }: { params: Promise<{ organizationId: string }> }): Promise<Metadata> {
+  const { organizationId } = await params;
+  try { const brand = await readPageBrand(organizationId); return { title: brand.generated ? `Motorista · ${brand.displayName}` : "Motorista · TourFlow", appleWebApp: { capable: true, title: brand.generated ? brand.displayName : "TourFlow" }, ...(brand.generated ? { icons: { apple: `/api/organizations/${organizationId}/brand/icon192?v=${brand.version}` } } : {}) }; }
+  catch (error) { if (error instanceof AccessDenied) return { title: "Motorista · TourFlow" }; throw error; }
+}
+export async function generateViewport({ params }: { params: Promise<{ organizationId: string }> }): Promise<Viewport> {
+  try { const brand = await readPageBrand((await params).organizationId); return { themeColor: brand.generated ? brand.primaryColor : "#143f38" }; }
+  catch (error) { if (error instanceof AccessDenied) return {}; throw error; }
+}
 export default async function DriverPortal({ params, searchParams }: { params: Promise<{ organizationId: string }>; searchParams: Promise<{ page?: string; saved?: string; history?: string }> }) {
   if (!(await currentActor())?.active) redirect("/login");
   const { organizationId } = await params, query = await searchParams;
@@ -17,7 +28,8 @@ export default async function DriverPortal({ params, searchParams }: { params: P
   if (!Number.isInteger(page) || page < 1 || page > 10000) notFound();
   const history = query.history === "1";
   const data = await readDriverPortal(organizationId, page, history).catch((error: unknown) => { if (error instanceof AccessDenied) notFound(); throw error; });
-  return <main><header><Link href="/workspace">O seu espaço</Link><p className="driver-eyebrow">TOURFLOW · MOTORISTA</p><h1>Olá, {data.driver.name}</h1><p>{data.organization.name} · {data.organization.timeZone}</p></header>
+  const brand = await readPageBrand(organizationId);
+  return <><link rel="manifest" href={`/driver/${organizationId}/manifest.webmanifest`} crossOrigin="use-credentials" /><div className={brand.generated ? "brand-themed" : undefined} style={brandStyle(brand)}><main><header><Link href="/workspace">O seu espaço</Link><div className="driver-brand"><BrandMark organizationId={organizationId} brand={brand} /><span>Motorista</span></div><h1>Olá, {data.driver.name}</h1><p>{data.organization.name} · {data.organization.timeZone}</p></header>
     <aside role="note"><strong>Teste interno</strong><p>Aceite e execução simulados. Sem autorização para operação pública.</p></aside>
     <DriverConnectivity />
     {query.saved === "1" ? <p role="status">Etapa guardada no servidor.</p> : null}
@@ -38,5 +50,5 @@ export default async function DriverPortal({ params, searchParams }: { params: P
     <nav aria-label="Páginas de serviços">{page > 1 ? <Link href={`?page=${page - 1}&history=${history ? 1 : 0}`}>Anterior</Link> : null}<span>Página {page}</span>{data.hasNext ? <Link href={`?page=${page + 1}&history=${history ? 1 : 0}`}>Seguinte</Link> : null}</nav>
     <details><summary>Adicionar ao ecrã inicial</summary><p>No Chrome/Edge, use o menu para instalar a aplicação. No Safari do iPhone, use Partilhar → Adicionar ao ecrã principal. A instalação requer HTTPS (ou localhost para testes). É necessária ligação para consultar e guardar etapas; não existem notificações automáticas nesta versão.</p></details>
     <form action={async () => { "use server"; await signOut({ redirectTo: "/login" }); }}><button>Sair</button></form>
-  </main>;
+  </main></div></>;
 }

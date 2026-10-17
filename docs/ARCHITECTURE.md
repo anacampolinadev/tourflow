@@ -53,3 +53,6 @@ operator é um módulo de composição de leituras privadas (shell, dia, contact
 
 ## Driver PWA — Sprint 09
 drivers/portal-domain.ts contém transições/tempos puros; portal.ts compõe identidade, vínculo explícito e ações transacionais. API pública em drivers/index.ts. UI em /driver e server actions autorizadas; nenhuma regra de negócio no cliente. Service worker restrito a navegação, sem cache/filas privadas, manifesto e ícones locais. Bookings e dispatch entendem as etapas e recusas; operator agrega novos estados. Ver [Sprint 09](SPRINT_09.md).
+
+## White-label — Sprint 10
+branding é um módulo independente (auth/compliance/tenants por APIs públicas), evitando ciclo com compliance. Factory e edição usam root lock, gate de aprovação, versão própria e audit atómico; nenhuma duplicação de workspaces/dados. BrandProfile/ativos privados em PostgreSQL. sharp explícito normaliza PNG e produz ícones; CSS apenas hex com contraste calculado e escopo de tenant. Metadados/autenticação de manifesto por organização; React cache restrito ao pedido. Sem resolução por Host/DNS nem publicação. Ver [Sprint 10](SPRINT_10.md).

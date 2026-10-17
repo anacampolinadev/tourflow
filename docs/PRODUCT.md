@@ -41,3 +41,6 @@ Visão diária de reservas/atribuições/janelas, próximas saídas, ações nec
 
 ## Sprint 09 — Motorista
 Portal móvel privado com vínculo explícito, atribuições próprias, aceite/recusa/chegada/início/conclusão e histórico de teste. PWA com manifesto e fallback offline genérico, sem guardar passageiros nem ações offline. Recusas exigem intervenção do operador. Ver [contratos e limites](SPRINT_09.md).
+
+## Sprint 10 — White-label
+Identidade por configuração: nome de apresentação, cores/logótipo e ícones aplicados ao painel e portal/PWA do motorista. Factory repetível sob gate documental, sem duplicar recursos nem publicar. Configuração privada por organização; domínios, site público, comunicação da assistente e GO LIVE continuam posteriores. Ver [contratos e limites](SPRINT_10.md).
