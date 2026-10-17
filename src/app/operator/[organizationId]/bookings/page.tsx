@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { AccessDenied, currentActor } from "@/modules/auth";
-import { readBookings } from "@/modules/bookings";
+import { readBookings, bookingLabels } from "@/modules/bookings";
 import { localLabel } from "@/modules/availability";
 import { ResourceForm } from "@/components/resource-form";
 import { bookingAction, cancelAction } from "./actions";
@@ -18,7 +18,7 @@ export default async function Bookings({ params, searchParams }: { params: Promi
   const canManage = ["OPERATOR_OWNER", "OPERATOR_DISPATCHER"].includes(data.context.role);
   return <main className="operator-catalog"><Link href={`/operator/${organizationId}`}>Operador</Link>
     <h1>Reservas</h1><p>{data.organization.name} · {data.organization.timeZone}</p>
-    <p role="note">Ambiente de teste interno. Estas reservas ocupam a agenda de teste; não representam vendas nem autorizam operação pública. É necessária aprovação documental válida. Cada reserva ocupa um veículo e um motorista para todo o grupo. A distribuição será adicionada na próxima etapa.</p>
+    <p role="note">Ambiente de teste interno. Estas reservas ocupam a agenda de teste; não representam vendas nem autorizam operação pública. É necessária aprovação documental válida. Cada reserva ocupa um veículo e um motorista para todo o grupo. A atribuição de recursos é gerida na distribuição interna.</p>
     {query.saved === "1" ? <p role="status">Reserva guardada.</p> : null}
     {canManage ? <details><summary>Nova reserva de teste</summary><p>O preço é calculado pelo serviço ao confirmar. Sem cobrança.</p>
       <ResourceForm preserveOnError label="Confirmar reserva de teste" action={bookingAction.bind(null, organizationId, randomUUID())} fields={[
@@ -37,12 +37,14 @@ export default async function Bookings({ params, searchParams }: { params: Promi
     </details> : <p>Modo de leitura.</p>}
     <h2>Histórico</h2>{!data.bookings.length ? <p>Ainda não existem reservas.</p> : null}
     {data.bookings.map((booking) => <article className="operator-card" key={booking.id} aria-label={`Reserva de ${booking.customer.name}`}>
-      <h3>{booking.serviceName}</h3><p>{booking.status === "CONFIRMED" ? "Confirmada em teste" : "Cancelada"} · {booking.passengers} passageiros · {money(booking.totalPriceCents, booking.currency)}</p>
+      <h3>{booking.serviceName}</h3><p>{bookingLabels[booking.status]} · {booking.passengers} passageiros · {money(booking.totalPriceCents, booking.currency)}</p>
       <p>{localLabel(booking.startsAt, booking.timeZone).replace("T", " ")} → {localLabel(booking.endsAt, booking.timeZone).replace("T", " ")} ({booking.timeZone})</p>
       <p>{booking.customer.name} · {booking.customer.email} · {booking.customer.phone}</p><p>Encontro: {booking.meetingPoint}</p>
+      <p><Link href={`/operator/${organizationId}/dispatch/${booking.id}`}>Ver distribuição</Link></p>
+      {booking.status === "ASSIGNED" && booking.occupancy ? <p>Atribuição de teste: {booking.occupancy.driver.name} · {booking.occupancy.vehicle.name}</p> : null}
       {booking.pickup ? <p>Recolha: {booking.pickup} · {booking.pickupRules}</p> : null}{booking.notes ? <p>Observações: {booking.notes}</p> : null}
-      <details><summary>Eventos da reserva</summary><ul>{booking.events.map((event) => <li key={event.id}>{event.type === "CONFIRMED" ? "Confirmada em teste" : "Cancelada"} · {localLabel(event.createdAt, booking.timeZone).replace("T", " ")}</li>)}</ul></details>
-      {canManage && booking.status === "CONFIRMED" ? <ResourceForm fields={[]} label="Cancelar reserva" action={cancelAction.bind(null, organizationId, booking.id, booking.version)} /> : null}
+      <details><summary>Eventos da reserva</summary><ul>{booking.events.map((event) => <li key={event.id}>{bookingLabels[event.type]} · {localLabel(event.createdAt, booking.timeZone).replace("T", " ")}</li>)}</ul></details>
+      {canManage && booking.status !== "CANCELLED" ? <ResourceForm fields={[]} label="Cancelar reserva" action={cancelAction.bind(null, organizationId, booking.id, booking.version)} /> : null}
     </article>)}
     <nav aria-label="Páginas de reservas">{page > 1 ? <Link href={`?page=${page - 1}`}>Anterior</Link> : null} <span>Página {page}</span> {data.hasNext ? <Link href={`?page=${page + 1}`}>Seguinte</Link> : null}</nav>
   </main>;

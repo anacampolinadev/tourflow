@@ -32,3 +32,6 @@ Saídas semanais no fuso do operador, associações serviço/veículo, janelas d
 
 ## Sprint 06 — Reservas internas
 Motor transacional em SANDBOX, preço/condições preservados, ocupação integral de veículo/motorista, idempotência, cancelamento e histórico. Exige aprovação documental válida; não publica nem vende ao público. Ver [contratos e limites](SPRINT_06.md).
+
+## Sprint 07 — Distribuição interna
+Escolha automática por elegibilidade, carga e capacidade; atribuição manual justificada; decisão explicável e histórico. Somente reservas SANDBOX, sem comunicação ao motorista ou publicação. Fatores sem observações ficam neutros. Documentos individuais de recursos não estão implementados e não se presume aptidão. Ver [contratos e limites](SPRINT_07.md).

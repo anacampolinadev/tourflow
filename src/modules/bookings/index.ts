@@ -1,2 +1,2 @@
 export { createBooking, cancelBooking, readBookings } from "./service";
-export { BookingError } from "./domain";
+export { BookingError, bookingLabels } from "./domain";
