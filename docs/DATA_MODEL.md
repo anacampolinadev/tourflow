@@ -57,3 +57,6 @@ Customer é snapshot privado por reserva, associado por tenant. Booking referenc
 
 ## Modelo físico 07
 BookingStatus acrescenta ASSIGNED, também usado no BookingEvent. DispatchDecision referencia reserva/veículo/motorista por FKs compostas de tenant e ator User; unicidade tenant/chave, hash, versão resultante, modo AUTO/MANUAL, resultado ASSIGNED/NO_CANDIDATE, score em pontos-base, motivo privado e JSON de fatores/candidatos/janela/seleção. CHECKs defendem resultado/par/score e versão positiva. Occupancy continua única por reserva, atualizada atomicamente sem janela de liberação; decisões anteriores permanecem imutáveis nos casos de uso. Ver [Sprint 07](SPRINT_07.md).
+
+## Projeções 08
+Sem novas tabelas, enum, migration ou alteração de dados persistidos. Consultas compõem Booking/Customer/Occupancy/DispatchDecision/DriverAvailability e estado documental existente. Indicadores usam intervalos locais semiabertos e última decisão por versão; relatórios agrupam saída no fuso, excluem canceladas dos valores e mantêm cêntimos bigint. Customer continua snapshot por reserva. Ver [Sprint 08](SPRINT_08.md).

@@ -47,3 +47,6 @@ bookings expõe createBooking/cancelBooking/readBookings por index.ts. Disponibi
 
 ## Dispatch — Sprint 07
 dispatch expõe dispatchBooking/readDispatch por index.ts; domínio puro rankCandidates/scoreCandidate e schema discriminado AUTO/MANUAL. availabilityInTransaction aceita opção interna de excluir apenas a reserva revalidada pelo chamador; não é endpoint. Dispatch bloqueia a raiz, revalida gates/intervalos e troca a ocupação na mesma transação. ReadCommitted, chave/hash e CAS de versão mantêm idempotência/concorrência; NO_CANDIDATE não libera recursos. Ranking separável evita produto cartesiano. UI em /operator/[organizationId]/dispatch/[bookingId]; booking mantém ASSIGNED/cancelamento e exposição de nomes dos recursos. Ver [Sprint 07](SPRINT_07.md).
+
+## Operator UI — Sprint 08
+operator é um módulo de composição de leituras privadas (shell, dia, contactos, relatório), sem alterações de schema ou dependências dos módulos de negócio de volta para ele. APIs públicas em index.ts, auth/compliance por contratos públicos e agregações SQL parametrizadas/Prisma em RepeatableRead. Layout comum e navegação cliente mínima; páginas usam casos de uso autorizados, não dependem apenas do layout. Reservas mantêm filtros no servidor; relatórios usam fuso local e bigint para cêntimos. Não há cache partilhado nem escrita nas leituras. Ver [Sprint 08](SPRINT_08.md).

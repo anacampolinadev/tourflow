@@ -35,3 +35,6 @@ Motor transacional em SANDBOX, preço/condições preservados, ocupação integr
 
 ## Sprint 07 — Distribuição interna
 Escolha automática por elegibilidade, carga e capacidade; atribuição manual justificada; decisão explicável e histórico. Somente reservas SANDBOX, sem comunicação ao motorista ou publicação. Fatores sem observações ficam neutros. Documentos individuais de recursos não estão implementados e não se presume aptidão. Ver [contratos e limites](SPRINT_07.md).
+
+## Sprint 08 — Painel do operador
+Visão diária de reservas/atribuições/janelas, próximas saídas, ações necessárias, navegação por papel e filtros. Consulta de contactos preservados, relatório por saídas locais e configurações em leitura. Indicadores de teste, sem afirmar receita, disponibilidade operacional ou execução. Ver [contratos e limites](SPRINT_08.md).
