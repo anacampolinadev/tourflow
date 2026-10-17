@@ -28,11 +28,12 @@ export default async function AssistantPage({ params, searchParams }: { params: 
   ] : [];
   const historical = Boolean(data && selected && data.version !== selected.version);
   return <main className="operator-catalog narrow"><Link href={`/operator/${organizationId}/settings`}>Configurações</Link><h1>Assistente Alana</h1>
-    <p className="sandbox-note">Preparação em SANDBOX. Ainda sem conversas com turistas, ferramentas ou canais ligados. Guardar uma versão não ativa a assistente nem publica o operador.</p>
+    <p className="sandbox-note">Preparação em SANDBOX. Ainda sem conversas com turistas ou canais ligados. Ferramentas disponíveis apenas no painel de testes. Guardar uma versão não ativa a assistente nem publica o operador.</p>
+    <p><Link href={`/operator/${organizationId}/assistant/tools`}>Abrir ferramentas de teste da Alana</Link></p>
     {search.saved === "1" ? <p role="status">Configuração da assistente guardada.</p> : null}
     {!data ? <><h2>Preparar assistente</h2><p>Cria a configuração inicial, com regras centrais da Alana e nome personalizável. Exige aprovação documental válida.</p><ResourceForm fields={[]} label="Preparar assistente de teste" action={initializeAssistantAction.bind(null, organizationId)} /></> : selected ? <>
       <h2>{historical ? "Consultar versão anterior" : "Configuração atual"} · versão {selected.version}</h2>
-      <p>Os horários abaixo são de atendimento. Preços, recolhas, disponibilidade e reservas serão consultados pelas ferramentas do próximo sprint. As notas não alteram o catálogo nem concedem permissões operacionais.</p>
+      <p>Os horários abaixo são de atendimento. Preços, recolhas, disponibilidade e reservas são consultados pelas ferramentas no painel de testes. As notas não alteram o catálogo nem concedem permissões operacionais.</p>
       <ResourceForm key={selected.version} fields={fields} readOnly={historical} preserveOnError label="Guardar configuração da assistente" action={updateAssistantAction.bind(null, organizationId, data.version)} />
       <p>Os contactos são internos. Ainda não há envio de mensagens nem encaminhamento automático.</p>
       <section aria-label="Regras centrais"><h2>Regras centrais da Alana</h2><ul><li>Não inventar preços, disponibilidade ou reservas.</li><li>Confirmar reserva apenas após sucesso real da ferramenta.</li><li>Respeitar a organização, os idiomas e as aprovações humanas.</li><li>Pedir ajuda humana perante falhas ou informação em falta.</li></ul><p>Estas regras são geridas pela TourFlow e não podem ser alteradas neste formulário.</p></section>

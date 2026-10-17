@@ -59,3 +59,10 @@ export async function updateService(organizationId: string, id: string, expected
     throw error;
   }
 }
+
+// Minimal live projection; internal server caller authorizes tenant before composition.
+export async function readAssistantCatalogInTransaction(tx: Prisma.TransactionClient, organizationId: string, page: number, serviceId?: string) {
+  const where = { organizationId, active: true, ...(serviceId ? { id: serviceId } : {}) };
+  const items = await tx.service.findMany({ where, select: { version: true, id: true, name: true, description: true, durationMinutes: true, pricingType: true, basePriceCents: true, currency: true, capacity: true, meetingPoint: true, pickupAvailable: true, pickupRules: true, languages: true }, orderBy: [{ name: "asc" }, { id: "asc" }], take: serviceId ? 1 : 25, skip: serviceId ? 0 : (page - 1) * 25 });
+  return { items, page, total: await tx.service.count({ where }) };
+}

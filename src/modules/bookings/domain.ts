@@ -12,7 +12,7 @@ export const bookingInput = availabilityInput.extend({
   customerPhone: z.string().trim().min(6).max(30).regex(/^[+()\d .-]+$/),
   pickup: z.string().trim().max(300).default(""),
   notes: z.string().trim().max(1000).default(""),
-  source: z.enum(["OPERATOR", "PHONE", "EMAIL"]).default("OPERATOR"),
+  source: z.enum(["OPERATOR", "PHONE", "EMAIL", "ASSISTANT_SANDBOX"]).default("OPERATOR"),
 }).strict();
 export function bookingPrice(pricingType: "PER_PERSON" | "PER_GROUP", unitPriceCents: number, passengers: number) {
   const total = unitPriceCents * (pricingType === "PER_PERSON" ? passengers : 1);

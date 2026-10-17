@@ -47,3 +47,6 @@ Identidade por configuração: nome de apresentação, cores/logótipo e ícones
 
 ## Sprint 11 — Alana Core
 Configuração privada e versões da assistente por operador: nome, tom, idiomas, horário de atendimento, políticas, FAQs e contactos internos. Playbook central separado e pré-visualização de instruções, sem inferência, ferramentas ou canais externos. Preparação não publica nem altera os gates humanos. Ver [contratos e limites](SPRINT_11.md).
+
+## Sprint 12 — Alana Tools
+Seis ferramentas de servidor em sessões privadas de teste: catálogo/detalhes, disponibilidade, criar/consultar reserva própria e registar ajuda humana. Preço e ocupação calculados pelo backend; fila interna sem mensagens enviadas. Painel manual, sem modelo ou canal de turistas. Ver [contratos e limites](SPRINT_12.md).

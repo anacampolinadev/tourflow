@@ -67,3 +67,6 @@ Em Configurações → Identidade da marca, o responsável gera a configuração
 
 ### Sprint 11 — Alana Core
 Em Configurações → Assistente Alana, o responsável prepara e personaliza a assistente, consulta instruções e histórico privado. Exige aprovação documental nas escritas. Sem modelo de IA, ferramentas ou canais ligados nesta etapa; o atendimento ao público continua desativado. Migration acrescenta perfis e versões; não há variável ou dependência nova. Ver [contratos e limites](docs/SPRINT_11.md).
+
+### Sprint 12 — Alana Tools
+Em Assistente Alana → Ferramentas de teste, guarde a configuração atual e inicie uma sessão privada. Consulte catálogo/disponibilidade, crie e consulte uma reserva da sessão ou registe um pedido de ajuda humana. Preços e recursos são validados pelo servidor; o pedido humano fica na fila interna, sem mensagem enviada. Novo pedido/recarregar gera outro identificador: use a mesma página para repetir um envio. Sem inferência/canais públicos ou variável nova. Ver [contratos e limites](docs/SPRINT_12.md).

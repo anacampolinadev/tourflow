@@ -55,6 +55,7 @@ model User {
   dispatchDecisions DispatchDecision[]
   driverAccounts Driver[]
   driverActions DriverAction[]
+  assistantConversations AssistantConversation[]
 }
 
 model Account {
@@ -430,6 +431,7 @@ model Booking {
   cancelledAt DateTime?
   organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
   service Service @relation(fields: [serviceId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  assistantToolCalls AssistantToolCall[]
   customer Customer @relation(fields: [customerId, organizationId], references: [id, organizationId], onDelete: Restrict)
   occupancy BookingOccupancy?
   driverActions DriverAction[]
@@ -552,6 +554,47 @@ model AssistantVersion {
   instructions String @db.Text
   playbookVersion String
   createdAt DateTime @default(now())
+  conversations AssistantConversation[]
   profile AssistantProfile @relation(fields: [organizationId], references: [organizationId], onDelete: Restrict)
   @@id([organizationId, version])
+}
+
+model AssistantConversation {
+  id String @id @default(uuid())
+  organizationId String
+  assistantVersion Int
+  actorId String
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+  assistant AssistantVersion @relation(fields: [organizationId, assistantVersion], references: [organizationId, version], onDelete: Restrict)
+  actor User @relation(fields: [actorId], references: [id], onDelete: Restrict)
+  calls AssistantToolCall[]
+  handoff AssistantHandoff?
+  @@unique([id, organizationId])
+  @@index([organizationId, actorId, createdAt])
+}
+
+model AssistantToolCall {
+  conversationId String
+  organizationId String
+  callId String
+  tool String
+  requestHash String
+  bookingId String?
+  createdAt DateTime @default(now())
+  conversation AssistantConversation @relation(fields: [conversationId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  booking Booking? @relation(fields: [bookingId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  @@id([conversationId, callId])
+  @@index([organizationId, bookingId])
+}
+
+model AssistantHandoff {
+  id String @id @default(cuid())
+  conversationId String @unique
+  organizationId String
+  reason String
+  createdAt DateTime @default(now())
+  conversation AssistantConversation @relation(fields: [conversationId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  @@unique([conversationId, organizationId])
+  @@index([organizationId, createdAt])
 }

@@ -69,3 +69,6 @@ BrandProfile tem organizationId como PK/FK Organization RESTRICT, nome/cores, lo
 
 ## Modelo físico 11
 AssistantProfile: organizationId PK/FK RESTRICT, versão atual, datas. AssistantVersion: PK (organizationId,version), FK RESTRICT para perfil, configuration JSONB, instructions TEXT, playbookVersion e data. Snapshot imutável pela API, sem exclusão/restauro; limite de 100 versões. CHECKs de versão/formato/bytes complementam Zod estrito. Contactos privados no snapshot, nunca em audit/prompt. Nenhuma alteração de status ou versão de OperatorProfile. Ver [Sprint 11](SPRINT_11.md).
+
+## Modelo físico 12
+AssistantConversation vincula organização/versão da assistente, User autor e TTL; AssistantToolCall tem PK conversa/callId, tool/hash e booking opcional; AssistantHandoff tem motivo privado e uma entrada por conversa. FKs compostas preservam tenant, RESTRICT, CHECKs de TTL/tipo/hash/motivo. Fonte de booking acrescenta ASSISTANT_SANDBOX; sem duplicar dados pessoais em tool logs. Não há transcrição, exclusão ou notificação automática. Ver [Sprint 12](SPRINT_12.md).
