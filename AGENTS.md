@@ -1,6 +1,6 @@
 # TourFlow — instruções para agentes
 
-Leia primeiro docs/CODEX_RULES.md, docs/PRODUCT.md e docs/ARCHITECTURE.md. Consulte docs/DATA_MODEL.md quando a tarefa envolver persistência. Sprints 01–14 implementados em PRs empilhados; preparação do piloto 15A acrescenta Retell preflight/ingresso de eventos, sem conversas reais ou produção. Consulte docs/SPRINT_15A.md. O piloto não foi executado; não declarar MVP pronto. Próximo trabalho exige novo pedido e deve resolver integrações/ferramentas/gates pendentes. Resultados exatos no relatório de entrega.
+Leia primeiro docs/CODEX_RULES.md, docs/PRODUCT.md e docs/ARCHITECTURE.md. Consulte docs/DATA_MODEL.md quando a tarefa envolver persistência. Sprints 01–14 implementados em PRs empilhados; preparação 15A acrescenta Retell preflight/eventos, 15B diagnóstico de ambiente e teste do build. Consulte docs/SPRINT_15A.md e docs/SPRINT_15B.md. Projeto de testes no Vercel sem publicação; PostgreSQL/SMTP reais e conversas ainda pendentes. O piloto não foi executado; não declarar MVP pronto. Próximo trabalho exige novo pedido e deve resolver recursos/integrações/ferramentas/gates pendentes. Resultados exatos no relatório de entrega.
 
 <!-- BEGIN:nextjs-agent-rules -->
 

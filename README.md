@@ -79,3 +79,7 @@ Em Atendimento, o responsável assume pedidos humanos, regista resolução ou de
 
 ### Preparação do piloto 15A — Retell
 Na Central → Ligação de telefonia, a administração associa um agente dedicado e verifica a API; o responsável acompanha o estado. POST /api/webhooks/retell recebe apenas eventos autenticados/reduzidos, sem transcrições nem operações de reserva. retell-sdk 6.2.8; três variáveis opcionais novas no .env.example, desativadas por defeito. Segredo apenas no servidor; aplicar migration e usar as mesmas suites. Sem chave/URL pública/prova, a ligação fica bloqueada. Nenhuma chamada ou publicação automática. Ver [configuração segura e limites](docs/SPRINT_15A.md). O piloto real ainda não foi executado.
+
+### Preparação do piloto 15B — Ambiente
+
+`npm run pilot:check -- --config-only` verifica requisitos sem contactar serviços; `npm run pilot:check` inspeciona banco/migrations/admin e autenticação SMTP com TLS, sem escrever ou enviar e-mail. Depois do build, `npm run pilot:smoke` verifica páginas, proteção privada, origem da autenticação e telefonia fechada num processo local temporário. Acrescentada a declaração TOURFLOW_ENVIRONMENT no exemplo. Sem dependências, migrations ou funcionalidades de negócio novas. Projeto de testes preparado no Vercel; banco, SMTP, publicação e ensaio real continuam pendentes. Ver [ordem de configuração e limites](docs/SPRINT_15B.md).
