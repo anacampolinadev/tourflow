@@ -22,7 +22,7 @@ Rotas atuais: /login, /workspace, /operator/[organizationId], /admin/operators e
 ## Stack e adoção
 Ativos: Next.js, React, TypeScript strict, ESLint, Vitest, PostgreSQL/Prisma 7, Auth.js, Nodemailer e Zod; Playwright para fluxo real de login/Admin. npm com lockfile, Node 24 como versão de referência.
 Planejados: Tailwind/shadcn quando a UI operacional exigir; PWA no Sprint 09. Vercel é o destino previsto, sem deploy nesta entrega.
-Retell, WhatsApp, n8n e email ficam atrás de adapters futuros. Não existe integração configurada agora.
+Retell ganha adapter de preflight e eventos na preparação 15A; conexão real exige configuração e prova por ambiente. WhatsApp, n8n e email de atendimento continuam futuros. SMTP atual serve login.
 
 ## Invariantes para os próximos sprints
 Derivar organização de identidade validada no servidor; nunca confiar isoladamente em organizationId enviado pelo cliente. Toda consulta operacional exige contexto do tenant e RBAC. Exceções SUPER_ADMIN devem ser explícitas e auditadas.
@@ -68,3 +68,6 @@ Novo módulo qa compõe APIs transacionais públicas de assistants. Probes reais
 
 ## Managed Ops — Sprint 14
 managed-ops gere o ciclo de AssistantHandoff sob lock raiz/CAS/evento/audit e compõe projeções de saúde atuais em RepeatableRead. API pública em index.ts; sem dependência inversa de assistants nem efeitos externos. Páginas owner/admin partilham componente de servidor; formulários recebem só dados mínimos e ações vinculadas, com autorização independente no serviço. Central administrativa limitada a 20 operadores por página; filas de 20 com totais completos e histórico até 100 eventos por pedido. Leituras owner não escrevem; admin explícito auditado. Canais não integrados permanecem pendentes, sem falsa telemetria. Ver [Sprint 14](SPRINT_14.md).
+
+## Retell preflight — Preparação 15A
+integrations contém domínio, adapter Retell server-only, casos de uso e fronteira de webhook; API pública por index.ts. managed-ops consome apenas projeção transacional sem rede. Não há dependência de assistants/bookings/qa, nem efeitos externos nos probes. Consulta real ao fornecedor fora da transação com ticket/CAS/revalidação; route handler autentica bytes e reduz payload antes de persistir. Associação permanente de agente, prova ligada à configuração e recibo idempotente sem PII. Sem transportes de LLM, consentimento de turista ou funções de reserva externas. Ver [15A](SPRINT_15A.md).

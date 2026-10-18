@@ -113,6 +113,7 @@ model Organization {
   assistant AssistantProfile?
   qaRuns QaRun[]
   members OrganizationMember[]
+  retell RetellConnection?
   operator OperatorProfile?
   auditLogs AuditLog[]
   complianceRequirements ComplianceRequirement[]
@@ -625,6 +626,31 @@ model HandoffEvent {
   actor User @relation(fields: [actorId], references: [id], onDelete: Restrict)
   @@unique([handoffId, version])
   @@index([organizationId, handoffId])
+}
+
+model RetellConnection {
+  organizationId String @id
+  agentId String @unique
+  enabled Boolean @default(false)
+  version Int @default(1)
+  checkedAt DateTime?
+  checkResult String @default("NOT_CHECKED")
+  checkToken String?
+  credentialHash String?
+  lastEventAt DateTime?
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  events RetellEvent[]
+}
+
+model RetellEvent {
+  id String @id @default(cuid())
+  organizationId String
+  callHash String
+  event String
+  receivedAt DateTime @default(now())
+  connection RetellConnection @relation(fields: [organizationId], references: [organizationId], onDelete: Restrict)
+  @@unique([organizationId, callHash, event])
+  @@index([organizationId, receivedAt])
 }
 
 model QaRun {

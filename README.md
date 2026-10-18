@@ -76,3 +76,6 @@ Em Qualidade, o responsável executa 34 verificações: 33 de preparação/ferra
 
 ### Sprint 14 — Managed Ops
 Em Atendimento, o responsável assume pedidos humanos, regista resolução ou devolve/reabre a fila; a administração usa Central Managed para acompanhar operadores e intervir com histórico auditado. Precisa de mim mostra documentos a expirar, pendências de distribuição, recusas e execução em atraso. Canais externos permanecem não integrados; nenhuma mensagem é enviada nem produção liberada. Aplicar a migration com o comando habitual e executar as mesmas suites. Sem dependência ou variável nova. Ver [contratos e limites](docs/SPRINT_14.md).
+
+### Preparação do piloto 15A — Retell
+Na Central → Ligação de telefonia, a administração associa um agente dedicado e verifica a API; o responsável acompanha o estado. POST /api/webhooks/retell recebe apenas eventos autenticados/reduzidos, sem transcrições nem operações de reserva. retell-sdk 6.2.8; três variáveis opcionais novas no .env.example, desativadas por defeito. Segredo apenas no servidor; aplicar migration e usar as mesmas suites. Sem chave/URL pública/prova, a ligação fica bloqueada. Nenhuma chamada ou publicação automática. Ver [configuração segura e limites](docs/SPRINT_15A.md). O piloto real ainda não foi executado.

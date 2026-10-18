@@ -56,3 +56,6 @@ Bateria por operador com 33 verificações internas e uma pendência explícita 
 
 ## Sprint 14 — Managed Ops
 Central por exceção para owner/admin: assumir, devolver, concluir e reabrir pedidos humanos com histórico privado; saúde de documentos, recusas e execução/distribuição pendente. Canais externos aparecem não integrados; nenhuma notificação ou produção presumida. Ver [contratos e limites](SPRINT_14.md).
+
+## Preparação 15A — Telefonia antes do piloto
+Associação administrativa de agente Retell, consulta verificável à API e recepção autenticada de eventos de ciclo, sem dados de conversa ou chamadas iniciadas pela aplicação. Evidência expira, segredos ficam no servidor e a ausência de conexão real continua explícita. Não executa piloto nem confirma conversas/reservas/produção. Ver [contratos e próximos passos](SPRINT_15A.md).

@@ -20,9 +20,10 @@ export function ManagedHealth({ health, base }: { health: Health; base: string }
       {health.declined > 0 ? <li>{health.declined} reserva(s) futura(s) com recusa do motorista. {base.startsWith("/operator/") ? <Link href={`${base}/bookings`}>Rever atribuição</Link> : "Peça ao operador para rever a atribuição."}</li> : null}
       {health.unassigned > 0 ? <li>{health.unassigned} reserva(s) sem distribuição nas próximas 24 horas. {base.startsWith("/operator/") ? <Link href={`${base}/bookings`}>Abrir reservas</Link> : "Peça ao operador para distribuir."}</li> : null}
       {health.overdue > 0 ? <li>{health.overdue} reserva(s) com início ou conclusão em atraso. {base.startsWith("/operator/") ? <Link href={`${base}/bookings`}>Rever execução</Link> : "Peça ao operador para rever a execução."}</li> : null}
-      <li>Atendimento externo pendente: Retell, WhatsApp e n8n ainda não integrados. Não há conectividade verificada.</li>
+      {health.retell.configured ? <li>Telefonia Retell: {!health.retell.enabled ? "recepção desativada" : health.retell.verified ? "API verificada; atendimento ainda pendente" : "verificação atual da ligação pendente"}. {health.retell.quotaReached ? "Limite de eventos atingido." : ""} WhatsApp e n8n ainda não integrados.</li> : <li>Atendimento externo pendente: Retell, WhatsApp e n8n ainda não integrados. Não há conectividade verificada.</li>}
     </ul>
     <p>Produção bloqueada. Esta central não substitui o QA, a validação do cliente ou o GO LIVE.</p>
+    <Link href={`${base}/integrations`}>Ligação de telefonia</Link>
   </section>;
 }
 const eventLabels: Record<string, string> = { CLAIM: "Atendimento assumido", RELEASE: "Devolvido à fila", RESOLVE: "Resolução registada", REOPEN: "Atendimento reaberto" };

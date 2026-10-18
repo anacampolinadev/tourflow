@@ -78,3 +78,6 @@ QaRun referencia organização/autor, suiteVersion/hash, checks JSONB e validade
 
 ## Modelo físico 14
 AssistantHandoff acrescenta status OPEN/IN_PROGRESS/RESOLVED, version 0..100, assignedToId User opcional e resolvedAt. Defaults preservam pedidos antigos como abertos. HandoffEvent referencia (handoffId,organizationId) e User ator, versão única por pedido, ação/nota privada/data. CHECKs de coerência estado/atribuição/resolução e evidência/limites. Histórico imutável na API e RESTRICT; audit sem notas/motivos. Saúde é projeção, sem Integration/HealthCheck fictícios ou segredos novos. Ver [Sprint 14](SPRINT_14.md).
+
+## Modelo físico 15A
+RetellConnection tem organizationId PK/FK RESTRICT, agentId global único e permanente na API, enabled/version, checkedAt/checkResult/checkToken, credentialHash e lastEventAt. CHECKs defendem versões, ID e evidência API_OK não nula/coerente; sem chave em claro. RetellEvent referencia a conexão do tenant e guarda apenas hash de chamada/tipo/data, com unicidade tenant/hash/tipo e CHECKs. Até 5000 recibos por operador no serviço; sem DELETE operacional ou dados de conversa. Recibos são observações autenticadas, sem atribuição a User fictício. Ver [15A](SPRINT_15A.md).
