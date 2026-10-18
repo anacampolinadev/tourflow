@@ -12,6 +12,8 @@
 11. Atualizar documentos quando houver decisão ou mudança de contrato. Documentar claramente o que está implementado e o que é plano.
 12. Definition of Done: escopo e aceite atendidos, verificações aprovadas, nenhuma credencial no diff, documentação coerente e limitações relatadas.
 
+Preparação 15B: executar diagnóstico antes de publicar o piloto; não substituir TLS por conexões inseguras nem guardar segredos no Git/logs. config-only não contacta recursos, diagnóstico não migra/escreve/envia mensagens. deploymentReady não significa entrega de e-mail, login real ou GO LIVE. Confirmar isolamento/destino antes de migrations/bootstrap e manter Retell fechado no primeiro preview. Ver docs/SPRINT_15B.md.
+
 ## Entrada curta para tarefas futuras
 Read first: docs/CODEX_RULES.md, docs/PRODUCT.md, docs/ARCHITECTURE.md.
 Task: SPRINT-XX — nome.

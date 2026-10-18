@@ -71,3 +71,7 @@ managed-ops gere o ciclo de AssistantHandoff sob lock raiz/CAS/evento/audit e co
 
 ## Retell preflight — Preparação 15A
 integrations contém domínio, adapter Retell server-only, casos de uso e fronteira de webhook; API pública por index.ts. managed-ops consome apenas projeção transacional sem rede. Não há dependência de assistants/bookings/qa, nem efeitos externos nos probes. Consulta real ao fornecedor fora da transação com ticket/CAS/revalidação; route handler autentica bytes e reduz payload antes de persistir. Associação permanente de agente, prova ligada à configuração e recibo idempotente sem PII. Sem transportes de LLM, consentimento de turista ou funções de reserva externas. Ver [15A](SPRINT_15A.md).
+
+## Diagnóstico do ambiente — Preparação 15B
+
+scripts/pilot executa diagnóstico exclusivamente por CLI, sem endpoint público e sem depender de módulos de negócio. Configuração é validada antes de conexões externas; banco READ ONLY verifica TLS/extensão/histórico exato/admin, SMTP verify exige TLS sem envio. Não executa migrations/bootstrap/deploy nem regista valores privados. Smoke inicia o build com fixtures descartáveis e encerra o processo; não comprova infraestrutura remota. Sem alterações de persistência. Ver [15B](SPRINT_15B.md).

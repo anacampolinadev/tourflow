@@ -10,6 +10,8 @@
     "dev": "next dev",
     "build": "prisma generate && next build",
     "start": "next start",
+    "pilot:check": "tsx scripts/pilot/check.ts",
+    "pilot:smoke": "tsx scripts/pilot/smoke.ts",
     "lint": "eslint . --max-warnings=0",
     "typecheck": "prisma generate && next typegen && tsc --noEmit",
     "test": "vitest run",

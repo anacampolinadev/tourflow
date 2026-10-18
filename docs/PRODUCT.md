@@ -2,6 +2,8 @@
 ## Objetivo
 Plataforma B2B de gestão operacional para operadores de tours terrestres com vários veículos e motoristas. TourFlow Managed combina software com atendimento remoto e gestão administrativa. O operador define preços, vende ao turista, executa o serviço e recebe diretamente os pagamentos.
 
+Preparação atual 15B: diagnóstico técnico de banco/SMTP e teste do build, com projeto de testes no Vercel ainda sem publicação. Não há integração operacional nem aprovação de produção. Ver [estado e próximos requisitos](SPRINT_15B.md).
+
 ## Escopo do MVP futuro
 Admin TourFlow, onboarding, revisão documental, serviços, veículos, motoristas, disponibilidade determinística, reservas transacionais, dispatch interno, painel do operador, PWA do motorista, white-label por configuração, Alana e operação por exceção.
 Uma única aplicação atende todos os operadores com isolamento por organização.
