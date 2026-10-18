@@ -2,6 +2,7 @@ import "server-only";
 import type { Prisma } from "@/generated/prisma/client";
 import { getDb } from "@/lib/db";
 import { AccessDenied, currentTenant, requireCurrentSuperAdmin } from "@/modules/auth";
+import { retellHealthInTransaction } from "@/modules/integrations";
 import { documentHealth, handoffInput, ManagedOpsError, nextHandoffState, queueInput } from "./domain";
 export type ManagedScope = "owner" | "admin";
 async function access(organizationId: string, scope: ManagedScope) {
@@ -41,7 +42,7 @@ export async function actOnHandoff(organizationId: string, handoffId: string, sc
   });
 }
 async function health(tx: Prisma.TransactionClient, organizationId: string, now: Date) {
-  const [operator, requirements, declined, unassigned, overdue, open, active] = await Promise.all([
+  const [operator, requirements, declined, unassigned, overdue, open, active, retell] = await Promise.all([
     tx.operatorProfile.findUnique({ where: { organizationId }, select: { status: true, approvedAt: true, approvedById: true } }),
     tx.complianceRequirement.findMany({ where: { organizationId, active: true }, select: { id: true, title: true, requiresExpiry: true, documents: { orderBy: { revision: "desc" }, take: 1, select: { status: true, expiresOn: true } } } }),
     tx.booking.count({ where: { organizationId, status: "DRIVER_DECLINED", startsAt: { gte: now } } }),
@@ -49,9 +50,10 @@ async function health(tx: Prisma.TransactionClient, organizationId: string, now:
     tx.booking.count({ where: { organizationId, OR: [{ status: { in: ["CONFIRMED", "ASSIGNED", "DRIVER_ACCEPTED", "DRIVER_DECLINED", "ARRIVED"] }, startsAt: { lt: now } }, { status: "IN_PROGRESS", endsAt: { lt: now } }] } }),
     tx.assistantHandoff.count({ where: { organizationId, status: "OPEN" } }),
     tx.assistantHandoff.count({ where: { organizationId, status: "IN_PROGRESS" } }),
+    retellHealthInTransaction(tx, organizationId),
   ]);
   const documents = requirements.map(row => ({ id: row.id, title: row.title, state: documentHealth(row.documents[0]?.status, row.documents[0]?.expiresOn, now, row.requiresExpiry) })).filter(row => row.state !== "OK");
-  return { operatorStatus: operator?.status ?? null, approvalMissing: !operator?.approvedAt || !operator.approvedById, documents, noRequirements: requirements.length === 0, declined, unassigned, overdue, open, active, checkedAt: now };
+  return { operatorStatus: operator?.status ?? null, approvalMissing: !operator?.approvedAt || !operator.approvedById, documents, noRequirements: requirements.length === 0, declined, unassigned, overdue, open, active, retell, checkedAt: now };
 }
 export async function readManagedOperations(organizationId: string, scope: ManagedScope, raw: unknown = {}) {
   const context = await access(organizationId, scope), query = queueInput.parse(raw);
